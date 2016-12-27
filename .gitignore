@@ -1,4 +1,2 @@
-ignore/*
-*.class
 *.java~
 .DS_Store
