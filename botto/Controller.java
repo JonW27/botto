@@ -1,3 +1,4 @@
+import java.util.*;
 import java.io.*;
 //import javax.mail.*;
 import java.util.concurrent.TimeUnit;
@@ -7,13 +8,21 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebElement;
 
 public class Controller{
-  public static String getMessage(WebDriver driver){
-    int size = driver.findElements(By.className("message-group")).size();
-  String str = driver.findElements(By.className("message-group")).get(size - 1).getText();
-  return str.substring(str.indexOf('\n') + 1,str.length());
+  public static WebElement getMessage(WebDriver driver){
+    List<WebElement> messages = driver.findElements(By.className("message-group"));
+    int size = messages.size();
+    return messages.get(size - 1);
   }
+    public static List<WebElement> getMarkups(WebElement message){
+        return message.findElements(By.className("markup"));
+    }
+    public static String getMarkup(WebElement message){
+	int size = getMarkups(message).size();
+	return getMarkups(message).get(size - 1).getText();
+    }
     public static void send(WebDriver driver,String str){
       driver.findElement(By.tagName("textarea")).sendKeys(str);
       driver.findElement(By.tagName("textarea")).sendKeys(Keys.RETURN);
@@ -39,10 +48,12 @@ public class Controller{
       driver.get("https://discordapp.com/channels/263162147792617482/263162147792617482");
       System.out.println(getMessage(driver));
       while(true){
-	  if(getMessage(driver).equals("hi")){
+	  WebElement message = getMessage(driver);
+	  String markup = getMarkup(message);
+	  if(markup.equals("hi")){
 	      send(driver,"hello");
 	  }
-	  else if(getMessage(driver).equals("break")){
+	  else if(markup.equals("break")){
 	      send(driver,"exiting loop");
 	      break;
 	  }
