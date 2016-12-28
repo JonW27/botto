@@ -11,10 +11,11 @@ import org.openqa.selenium.Keys;
 public class Controller{
   public static void main(String[] args){
     String lol = "testing/chromedriver";
+    String discordChannel = "https://discordapp.com/channels/263162147792617482/263162147792617482";
     System.setProperty("webdriver.chrome.driver", lol);
     WebDriver driver = new ChromeDriver();
     try{
-      driver.get("https://discordapp.com/channels/263162147792617482/263162147792617482");
+      driver.get(discordChannel);
       System.out.println("Scaffolding worked! "+ driver.getTitle());
       driver.findElement(By.id("register-email")).sendKeys(""); //email
       driver.findElement(By.id("register-password")).sendKeys(""); // password
@@ -27,7 +28,7 @@ public class Controller{
         TimeUnit.SECONDS.sleep(1);
         driver.findElement(By.xpath("//*[contains(text(), 'Skip')]")).click();
       }
-      driver.get("https://discordapp.com/channels/263472881525194752/263472881525194752");
+      driver.get(discordChannel);
       driver.findElement(By.tagName("textarea")).sendKeys("my test worked... part 1 complete :D");
       driver.findElement(By.tagName("textarea")).sendKeys(Keys.RETURN);
       //System.out.println(driver.getPageSource());
