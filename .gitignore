@@ -1,2 +1,4 @@
 *.java~
 .DS_Store
+ignore/*
+botto/testing/chromedriver.exe
