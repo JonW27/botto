@@ -11,6 +11,30 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 
 public class Controller{
+    static int maxSleepTime = 5;
+    static int minSleepTime = 1;
+    static int sleepTime = 1;
+    static int maxCounter = 300;
+    static int counter = 300;
+    public static void updateSleepCounter(WebDriver driver,boolean x){
+	if(x){
+	    counter = maxCounter;
+	}
+	else{  
+	    if(counter == maxCounter){
+		//send(driver,"checking messages every second");
+		sleepTime = minSleepTime;
+	    }
+	    if(counter > 0){
+		counter -= 1;
+	    }
+	    else if(counter == 0){
+		//send(driver,"counter is equal to 0, only checking messages every 5 seconds");
+		sleepTime = maxSleepTime;
+		counter -= 1;
+	    }
+	}
+    }
   public static WebElement getMessageGroup(WebDriver driver){
     List<WebElement> messages = driver.findElements(By.className("message-group"));
     int size = messages.size();
@@ -80,11 +104,6 @@ public class Controller{
       String username = account.findElement(By.className("username")).getText();
       String profilePic = profilePicCheck(account,"small");
       String discriminator = account.findElement(By.className("discriminator")).getText();
-      int maxSleepTime = 5;
-      int minSleepTime = 1;
-      int sleepTime = 1;
-      int maxCounter = 300;
-      int counter = 300;
       while(true){
 	  WebElement message = getMessageGroup(driver);
 	  String markup = getMarkup(message);
@@ -92,12 +111,15 @@ public class Controller{
 	       profilePicCheck(message).equals(profilePic))){
 	      if(markup.equals("hi")){
 		  send(driver,"hello " + getUsername(message));
+		  updateSleepCounter(driver,true);
 	      }
 	      else if(markup.equals("-time")){
 		  send(driver,getTimeStamp(message));
+		  updateSleepCounter(driver,true);
 	      }
 	      else if(markup.equals("say hi")){
 		  send(driver,"hi");
+		  updateSleepCounter(driver,true);
 	      }
 	      else if(markup.equals("-profilePicCheck")){
 		  send(driver,"I am");
@@ -105,27 +127,22 @@ public class Controller{
 		  send(driver,profilePic);
 		  send(driver,"message from");
 		  send(driver,profilePicCheck(message));
+		  updateSleepCounter(driver,true);
 	      }
 	      else if(markup.equals("-getDiscriminator")){
 		  send(driver,getDiscriminator(driver,message));
+		  updateSleepCounter(driver,true);
 	      }
 	      else if(markup.equals("break")){
 		  send(driver,"exiting loop");
 		  break;
 	      }
-	      counter = maxCounter;
+	      else{
+		  updateSleepCounter(driver,false);
+	      }
 	  }
 	  else{
-	      if(counter == maxCounter){
-		  sleepTime = minSleepTime;
-	      }
-	      else if(counter > 0){
-		  counter -= 1;
-	      }
-	      else if(counter == 0){
-		  sleepTime = maxSleepTime;
-		  counter -= 1;
-	      }
+	      updateSleepCounter(driver,false);
 	  }
 	  TimeUnit.SECONDS.sleep(sleepTime);
       }
