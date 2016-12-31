@@ -1,6 +1,6 @@
 *.java~
 .DS_Store
-mfs.botto
+/botto/mnf.botto
 ignore/*
 botto/testing/chromedriver.exe
 botto/phantomjsdriver.log
