@@ -35,6 +35,35 @@ public class Controller{
 	    }
 	}
     }
+    static ArrayList<String> command;
+    public static void getCommand(String markup){
+	command = new ArrayList<String>();
+	markup += " ";
+	int i = 0;
+	boolean backslash = false;
+	char x;
+	while(i < markup.length()){
+	    x = markup.charAt(i);
+	    if(x == '\\' && !backslash){
+		backslash = true;
+		markup = markup.substring(0,i) + markup.substring(i + 1, markup.length());
+	    }
+	    else if(x == ' ' && !backslash){
+		command.add(markup.substring(0,i));
+		markup = markup.substring(i + 1,markup.length());
+		i = -1;
+	    }
+	    else if(backslash){
+		backslash = false;
+	    }
+	    i++;
+	}
+    }
+    public static boolean commandCheck(String head,boolean unlimitedInputs,
+				       int minInputs,int maxInputs){
+	return command.get(0).equals(head) && command.size() - 1 >= minInputs &&
+	    (unlimitedInputs || command.size() - 1 <= maxInputs);
+    }
   public static WebElement getMessageGroup(WebDriver driver){
     List<WebElement> messages = driver.findElements(By.className("message-group"));
     int size = messages.size();
@@ -104,46 +133,65 @@ public class Controller{
       String username = account.findElement(By.className("username")).getText();
       String profilePic = profilePicCheck(account,"small");
       String discriminator = account.findElement(By.className("discriminator")).getText();
+      String oldMessage = getMessageGroup(driver).getText();
+      String newMessage;
+      WebElement message;
+      String markup;
       while(true){
-	  WebElement message = getMessageGroup(driver);
-	  String markup = getMarkup(message);
-	  if(!(getUsername(message).equals(username) &&
-	       profilePicCheck(message).equals(profilePic))){
-	      if(markup.equals("hi")){
-		  send(driver,"hello " + getUsername(message));
-		  updateSleepCounter(driver,true);
-	      }
-	      else if(markup.equals("-time")){
-		  send(driver,getTimeStamp(message));
-		  updateSleepCounter(driver,true);
-	      }
-	      else if(markup.equals("say hi")){
-		  send(driver,"hi");
-		  updateSleepCounter(driver,true);
-	      }
-	      else if(markup.equals("-profilePicCheck")){
-		  send(driver,"I am");
-		  send(driver,username);
-		  send(driver,profilePic);
-		  send(driver,"message from");
-		  send(driver,profilePicCheck(message));
-		  updateSleepCounter(driver,true);
-	      }
-	      else if(markup.equals("-getDiscriminator")){
-		  send(driver,getDiscriminator(driver,message));
-		  updateSleepCounter(driver,true);
-	      }
-	      else if(markup.equals("break")){
-		  send(driver,"exiting loop");
-		  break;
-	      }
-	      else{
-		  updateSleepCounter(driver,false);
+	  message = getMessageGroup(driver);
+	  markup = getMarkup(message);
+	  newMessage = message.getText();
+	  if(!(oldMessage.equals(newMessage))){
+	      if(!(getUsername(message).equals(username) &&
+		   profilePicCheck(message).equals(profilePic))){
+		  getCommand(markup);
+		  if(command.size() == 0){
+		      command.add("null");
+		  }
+		  System.out.println(command);
+		  if(markup.charAt(0) == '-'){
+		      if(commandCheck("-time",false,0,0)){
+			  send(driver,getTimeStamp(message));
+		      }
+		      else if(commandCheck("-profilePicCheck",false,0,0)){
+			  send(driver,"I am");
+			  send(driver,username);
+			  send(driver,profilePic);
+			  send(driver,"message from");
+			  send(driver,profilePicCheck(message));
+		      }
+		      else if(commandCheck("-getDiscriminator",false,0,0)){
+			  send(driver,getDiscriminator(driver,message));
+		      }
+		      else if(commandCheck("-break",false,0,0)){
+			  send(driver,"exiting loop");
+			  break;
+		      }
+		      updateSleepCounter(driver,true);
+		  }
+		  else{
+		      if(commandCheck("hi",false,0,1)){
+			  if(command.size() == 2){
+			      if (command.get(1).equals(username)){
+				  send(driver,"hello, that's me");
+			      }
+			  }
+			  else{
+			      send(driver,"hello " + getUsername(message));
+			  }
+		      }
+		      else if(commandCheck("say",false,1,1)){
+			  send(driver,command.get(1));
+		      }
+		      else if(commandCheck("break",false,0,0)){
+			  send(driver,"the break command has been changed to -break");
+		      }
+		      updateSleepCounter(driver,true);
+		  }
+		  oldMessage = newMessage;
 	      }
 	  }
-	  else{
-	      updateSleepCounter(driver,false);
-	  }
+	  updateSleepCounter(driver,false);
 	  TimeUnit.SECONDS.sleep(sleepTime);
       }
       //System.out.println(driver.getPageSource());
