@@ -1,3 +1,7 @@
 *.java~
 .DS_Store
 mfs.botto
+ignore/*
+botto/testing/chromedriver.exe
+botto/phantomjsdriver.log
+*.png

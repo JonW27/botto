@@ -1,0 +1,70 @@
+<div class="message-group hide-overflow">
+<div class="avatar-large stop-animation" style="background-image: url(&quot;/assets/322c936a8c8be1b803cd94861bdfa868.png&quot;);">
+</div>
+<div class="comment"><div class="message first">
+<div class="body">
+<h2>
+<span class="username-wrapper">
+<strong class="user-name">edmond</strong>
+</span>
+<span class="highlight-separator"> - </span>
+<span class="timestamp">Today at 5:13 PM</span>
+</h2>
+<div class="message-text">
+<div class="btn-option">
+</div>
+<div class="btn-reaction">
+</div>
+<div class="markup">
+<!-- react-text: 1086 -->testing<!-- /react-text -->
+</div>
+</div>
+</div>
+<div class="accessory">
+</div>
+</div>
+<div class="message">
+<div class="body">
+<div class="message-text">
+<div class="btn-option">
+</div>
+<div class="btn-reaction">
+</div><div class="markup">
+<!-- react-text: 1105 -->testing2<!-- /react-text -->
+</div>
+</div>
+</div>
+<div class="accessory">
+</div>
+</div>
+<div class="message">
+<div class="body">
+<div class="message-text">
+<div class="btn-option">
+</div>
+<div class="btn-reaction">
+</div><div class="markup">
+<!-- react-text: 1140 -->testing3<!-- /react-text -->
+</div>
+</div>
+</div>
+<div class="accessory">
+</div>
+</div>
+<div class="message">
+<div class="body">
+<div class="message-text">
+<div class="btn-option">
+</div>
+<div class="btn-reaction">
+</div><div class="markup">
+<!-- react-text: 1161 -->testing4
+44444<!-- /react-text -->
+</div>
+</div>
+</div>
+<div class="accessory">
+</div>
+</div>
+</div>
+</div>
