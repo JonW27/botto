@@ -16,8 +16,27 @@ public class Controller{
     int size = messages.size();
     return messages.get(size - 1);
   }
+    public static String profilePicCheck(WebElement message, String x){
+     String url = message.findElement(By.className("avatar-" + x)).getAttribute("style");
+     return url.substring(url.indexOf('"') + 1 ,url.lastIndexOf('"'));
+    }
+    public static String profilePicCheck(WebElement message){
+	return profilePicCheck(message,"large");
+    }
     public static List<WebElement> getMarkups(WebElement message){
         return message.findElements(By.className("markup"));
+    }
+    public static String getDiscriminator(WebDriver driver,WebElement message,String x){
+	WebElement avatar = message.findElement(By.className("avatar-" + x));
+	avatar.click();
+	String discriminator = driver.findElement(By.className("user-popout"))
+	    .findElement(By.className("discriminator"))
+	    .getText();
+	avatar.click();
+	return discriminator;
+    }
+    public static String getDiscriminator(WebDriver driver,WebElement message){
+	return getDiscriminator(driver,message,"large");
     }
     public static String getMarkup(WebElement message){
 	int size = getMarkups(message).size();
@@ -55,26 +74,60 @@ public class Controller{
       }
       driver.get("https://discordapp.com/channels/263162147792617482/263162147792617482");
       //System.out.println(getMessageGroup(driver));
-      String username = "bottodemo";
+
+     
+      WebElement account = driver.findElement(By.className("account"));
+      String username = account.findElement(By.className("username")).getText();
+      String profilePic = profilePicCheck(account,"small");
+      String discriminator = account.findElement(By.className("discriminator")).getText();
+      int maxSleepTime = 5;
+      int minSleepTime = 1;
+      int sleepTime = 1;
+      int maxCounter = 300;
+      int counter = 300;
       while(true){
 	  WebElement message = getMessageGroup(driver);
 	  String markup = getMarkup(message);
-	  if(!(getUsername(message).equals(username))){
+	  if(!(getUsername(message).equals(username) &&
+	       profilePicCheck(message).equals(profilePic))){
 	      if(markup.equals("hi")){
 		  send(driver,"hello " + getUsername(message));
 	      }
 	      else if(markup.equals("-time")){
 		  send(driver,getTimeStamp(message));
 	      }
-	      else if(markup.equals("-infinite loop")){
+	      else if(markup.equals("say hi")){
 		  send(driver,"hi");
+	      }
+	      else if(markup.equals("-profilePicCheck")){
+		  send(driver,"I am");
+		  send(driver,username);
+		  send(driver,profilePic);
+		  send(driver,"message from");
+		  send(driver,profilePicCheck(message));
+	      }
+	      else if(markup.equals("-getDiscriminator")){
+		  send(driver,getDiscriminator(driver,message));
 	      }
 	      else if(markup.equals("break")){
 		  send(driver,"exiting loop");
 		  break;
 	      }
+	      counter = maxCounter;
 	  }
-	  TimeUnit.SECONDS.sleep(1);
+	  else{
+	      if(counter == maxCounter){
+		  sleepTime = minSleepTime;
+	      }
+	      else if(counter > 0){
+		  counter -= 1;
+	      }
+	      else if(counter == 0){
+		  sleepTime = maxSleepTime;
+		  counter -= 1;
+	      }
+	  }
+	  TimeUnit.SECONDS.sleep(sleepTime);
       }
       //System.out.println(driver.getPageSource());
       TimeUnit.SECONDS.sleep(1);
