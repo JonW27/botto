@@ -1,7 +1,0 @@
-import java.io.*;
-
-public class Botto{
-
-  public static void main(String[] args){
-      Discord discord = new Discord("testing/chromedriver.exe");
-}

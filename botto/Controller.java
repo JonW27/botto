@@ -10,16 +10,35 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 
-class Discord{
+class Controller{
+    private WebDriver driver;
+    private String state;
+    private String tag;
+    public Controller(WebDriver driver, String tag){
+	state = "on";
+	this.driver = driver;
+	this.tag = tag;
+    }
+    public String getTag(){
+	return tag;
+    }
+}
+
+class Discord extends Controller{
     private int maxSleepTime = 5;
     private int minSleepTime = 1;
     private int sleepTime = 1;
     private int maxCounter = 300;
     private int counter = 300;
-    private WebDriver driver;
-    public Controller(String lol){
-	System.setProperty("webdriver.chrome.driver", lol);
-	driver = new ChromeDriver();
+    public Controller(WebDriver driver, String tag){
+	super(driver,tag);
+    }
+    public int getSleepTime(){
+	return sleepTime;
+    }
+    private void kill(){
+	state = "dead";
+	driver.quit();
     }
     private void updateSleepCounter(WebDriver driver,boolean x){
 	if(x){
@@ -40,7 +59,7 @@ class Discord{
 	    }
 	}
     }
-    static ArrayList<String> command;
+    private static ArrayList<String> command;
     private void getCommand(String markup){
 	command = new ArrayList<String>();
 	markup += " ";
@@ -74,17 +93,17 @@ class Discord{
     int size = messages.size();
     return messages.get(size - 1);
   }
-    public static String profilePicCheck(WebElement message, String x){
+    private static String profilePicCheck(WebElement message, String x){
      String url = message.findElement(By.className("avatar-" + x)).getAttribute("style");
      return url.substring(url.indexOf('"') + 1 ,url.lastIndexOf('"'));
     }
-    public static String profilePicCheck(WebElement message){
+    private static String profilePicCheck(WebElement message){
 	return profilePicCheck(message,"large");
     }
-    public static List<WebElement> getMarkups(WebElement message){
+    private static List<WebElement> getMarkups(WebElement message){
         return message.findElements(By.className("markup"));
     }
-    public static String getDiscriminator(WebDriver driver,WebElement message,String x){
+    private static String getDiscriminator(WebDriver driver,WebElement message,String x){
 	WebElement avatar = message.findElement(By.className("avatar-" + x));
 	avatar.click();
 	String discriminator = driver.findElement(By.className("user-popout"))
@@ -93,26 +112,26 @@ class Discord{
 	avatar.click();
 	return discriminator;
     }
-    public static String getDiscriminator(WebDriver driver,WebElement message){
+    private static String getDiscriminator(WebDriver driver,WebElement message){
 	return getDiscriminator(driver,message,"large");
     }
-    public static String getMarkup(WebElement message){
+    private static String getMarkup(WebElement message){
 	int size = getMarkups(message).size();
 	return getMarkups(message).get(size - 1).getText();
     }
     //getUsername is not a valid way of identification
-    public static String getUsername(WebElement messageGroup){
+    private static String getUsername(WebElement messageGroup){
 	return messageGroup.findElement(By.className("user-name")).getText();
     }
-    public static String getTimeStamp(WebElement messageGroup){
+    private static String getTimeStamp(WebElement messageGroup){
 	return messageGroup.findElement(By.className("timestamp")).getText();
     }
-    public static boolean send(WebDriver driver,String str){
+    private static boolean send(WebDriver driver,String str){
       driver.findElement(By.tagName("textarea")).sendKeys(str);
       driver.findElement(By.tagName("textarea")).sendKeys(Keys.RETURN);
       return true;
     }
-    public void begin();
+    public void tick();
     try{
 	driver.get("https://discordapp.com/channels/263162147792617482/263162147792617482");
 	System.out.println("Scaffolding worked! "+ driver.getTitle());
@@ -139,67 +158,63 @@ class Discord{
 	String newMessage;
 	WebElement message;
 	String markup;
-	while(true){
-	    message = getMessageGroup();
-	    markup = getMarkup(message);
-	    newMessage = message.getText();
-	    if(!(oldMessage.equals(newMessage))){
-		if(!(getUsername(message).equals(username) &&
-		     profilePicCheck(message).equals(profilePic))){
-		    getCommand(markup);
-		    if(command.size() == 0){
-			command.add("null");
-		    }
-		    System.out.println(command);
-		    if(markup.charAt(0) == '-'){
-			if(commandCheck("-time",false,0,0)){
-			    send(driver,getTimeStamp(message));
-			}
-			else if(commandCheck("-profilePicCheck",false,0,0)){
-			    send(driver,"I am");
-			    send(driver,username);
-			    send(driver,profilePic);
-			    send(driver,"message from");
-			    send(driver,profilePicCheck(message));
-			}
-			else if(commandCheck("-getDiscriminator",false,0,0)){
-			    send(driver,getDiscriminator(driver,message));
-			}
-			else if(commandCheck("-break",false,0,0)){
-			    send(driver,"exiting loop");
-			    break;
-			}
-			updateSleepCounter(driver,true);
-		    }
-		    else{
-			if(commandCheck("hi",false,0,1)){
-			    if(command.size() == 2){
-				if (command.get(1).equals(username)){
-				    send(driver,"hello, that's me");
-				}
-			    }
-			    else{
-				send(driver,"hello " + getUsername(message));
-			    }
-			}
-			else if(commandCheck("say",false,1,1)){
-			    send(driver,command.get(1));
-			  }
-			else if(commandCheck("break",false,0,0)){
-			    send(driver,"the break command has been changed to -break");
-			}
-			updateSleepCounter(driver,true);
-		    }
-		    oldMessage = newMessage;
+	
+	message = getMessageGroup();
+	markup = getMarkup(message);
+	newMessage = message.getText();
+	if(!(oldMessage.equals(newMessage))){
+	    if(!(getUsername(message).equals(username) &&
+		 profilePicCheck(message).equals(profilePic))){
+		getCommand(markup);
+		if(command.size() == 0){
+		    command.add("null");
 		}
+		//System.out.println(command);
+		if(markup.charAt(0) == '-'){
+		    if(commandCheck("-time",false,0,0)){
+			send(driver,getTimeStamp(message));
+		    }
+		    else if(commandCheck("-profilePicCheck",false,0,0)){
+			send(driver,"I am");
+			send(driver,username);
+			send(driver,profilePic);
+			send(driver,"message from");
+			send(driver,profilePicCheck(message));
+		    }
+		    else if(commandCheck("-getDiscriminator",false,0,0)){
+			send(driver,getDiscriminator(driver,message));
+		    }
+		    else if(commandCheck("-break",false,0,0)){
+			send(driver,"exiting loop");
+			kill();
+		    }
+		    updateSleepCounter(driver,true);
+		}
+		else{
+		    if(commandCheck("hi",false,0,1)){
+			if(command.size() == 2){
+			    if (command.get(1).equals(username)){
+				send(driver,"hello, that's me");
+			    }
+			}
+			else{
+			    send(driver,"hello " + getUsername(message));
+			}
+		    }
+		    else if(commandCheck("say",false,1,1)){
+			send(driver,command.get(1));
+		    }
+		    else if(commandCheck("break",false,0,0)){
+			send(driver,"the break command has been changed to -break");
+		    }
+		    updateSleepCounter(driver,true);
+		}
+		oldMessage = newMessage;
 	    }
-	    updateSleepCounter(driver,false);
-	    TimeUnit.SECONDS.sleep(sleepTime);
 	}
-	//System.out.println(driver.getPageSource());
-	TimeUnit.SECONDS.sleep(1);
-	driver.quit();
+	updateSleepCounter(driver,false);
     }
+    //System.out.println(driver.getPageSource());
     catch(Throwable e){
 	e.printStackTrace();
     }
