@@ -15,17 +15,26 @@ class info{
 }
 public class Botto{
     private static ArrayList<Controller> Controllers = new ArrayList<WebDriver>();
-    private static void addController(Controller x){
-	Controllers.add(x);
-    }
     private static Controller getController(int index){
 	return Controllers.get(index);
     }
-    public static void main(String[] args){
-	System.setProperty("webdriver.chrome.driver", info.chromePath);
+    private static Controller makeController(String tag){
 	WebDriver driver = new Chromedriver();
 	Controller discord = new Discord(driver,"discord");
 	Controllers.add(discord);
-	TimeUnit.SECONDS.sleep(1); // add this to while loop
+    }
+    // private static Controller getController(String tag){
+    //	for(int i = 0;i < Controllers.size();i++){
+    //	    if(getController(i).getTag().equals(tag)){
+    //		return getController(i);
+    //	    }
+    //	}
+    //}
+    public static void main(String[] args){
+	System.setProperty("webdriver.chrome.driver", info.chromePath);
+	While(true){
+	    
+	    TimeUnit.SECONDS.sleep(1); // add this to while loop
+	}
   }
 }
