@@ -23,18 +23,25 @@ public class Botto{
 	Controller discord = new Discord(driver,"discord");
 	Controllers.add(discord);
     }
-    // private static Controller getController(String tag){
-    //	for(int i = 0;i < Controllers.size();i++){
-    //	    if(getController(i).getTag().equals(tag)){
-    //		return getController(i);
-    //	    }
-    //	}
-    //}
+    private static int tickLength = 1;
+    private static int getTickLength(){
+	return ticklength;
+    }
+    private static int getControllerIndex(String tag){
+    	for(int i = 0;i < Controllers.size();i++){
+    	    if(getController(i).getTag().equals(tag)){
+    		return i;
+    	    }
+   	}
+	return -1;
+    }
     public static void main(String[] args){
 	System.setProperty("webdriver.chrome.driver", info.chromePath);
 	While(true){
-	    
-	    TimeUnit.SECONDS.sleep(1); // add this to while loop
+	    for(int i = 0;i < Controllers.size();i++){
+		getController(i).tick();
+	    }
+	    TimeUnit.SECONDS.sleep(tickLength); // add this to while loop
 	}
   }
 }

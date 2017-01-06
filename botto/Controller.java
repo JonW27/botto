@@ -22,28 +22,19 @@ class Controller{
     public String getTag(){
 	return tag;
     }
+    private void kill(){
+	state = "dead";
+	driver.quit();
+    }
     public String getState(){
 	return state;
     }
     int maxSleepTime = 5;
     int minSleepTime = 1;
     int sleepTime = 1;
+    int pause = 0;
     int maxCounter = 300;
     int counter = 300;
-    public void startup(){
-    }
-    public void tick(){
-    }
-}
-
-class Discord extends Controller{
-    public Controller(WebDriver driver, String tag){
-	super(driver,tag);
-    }
-    private void kill(){
-	state = "dead";
-	driver.quit();
-    }
     private void updateSleepCounter(WebDriver driver,boolean x){
 	if(x){
 	    counter = maxCounter;
@@ -62,6 +53,17 @@ class Discord extends Controller{
 		counter -= 1;
 	    }
 	}
+    }
+    public void startup(){
+	System.out.println("Controller class is meant to be extended");
+    }
+    public void tick(){
+    }
+}
+
+class Discord extends Controller{
+    public Controller(WebDriver driver, String tag){
+	super(driver,tag);
     }
     private static ArrayList<String> command;
     private void getCommand(String markup){
@@ -176,6 +178,8 @@ class Discord extends Controller{
 	}
     }
     public void tick(){
+	if(pause <= 0 and state.equals("on")){
+	    pause = sleepTime;
 	try{
 	    message = getMessageGroup();
 	    markup = getMarkup(message);
@@ -235,6 +239,10 @@ class Discord extends Controller{
 	//System.out.println(driver.getPageSource());
 	catch(Throwable e){
 	    e.printStackTrace();
+	}
+	}
+	else{
+	    pause--;
 	}
     }
 }
