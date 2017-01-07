@@ -59,6 +59,24 @@ class Controller{
     }
     public void tick(){
     }
+    private void getCommand(String markuo){
+    }
+    private boolean commandCheck(String head,boolean unlimitedInputs,
+				       int minInputs,int maxInputs){
+    }
+    private WebElement getMessageGroup(){
+    }
+    private static String profilePicCheck(WebElement message, String x){
+    }
+    private static List<WebElement> getMarkups(WebElement message){
+    }
+    private static String getUsername(WebElement messageGroup){
+    }
+    private static String getTimeStamp(WebElement messageGroup){
+    }
+    private static boolean send(WebDriver driver,String str){
+    }
+    
 }
 
 class Discord extends Controller{
@@ -94,7 +112,7 @@ class Discord extends Controller{
 	return command.get(0).equals(head) && command.size() - 1 >= minInputs &&
 	    (unlimitedInputs || command.size() - 1 <= maxInputs);
     }
-  private WebElement getMessageGroup(){
+    private WebElement getMessageGroup(){
     List<WebElement> messages = driver.findElements(By.className("message-group"));
     int size = messages.size();
     return messages.get(size - 1);
