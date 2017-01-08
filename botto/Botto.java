@@ -6,23 +6,70 @@ import java.net.InetAddress;
 //import com.sun.mail.smtp.*;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.JavascriptExecutor;
 
 class info{
-    public static String chromePath = "testing/chromedriver.exe";
+    public static String os = System.getProperty("os.name");
+    public static String chromePath;
+    public static String phantomPath;
+    public static int determine;
+    public static boolean headless = Model.yesNoPrompt("Use phantomjs (headless) to reduce overhead, instead of chrome browser?");
+    public static void info(){
+      if(os.equals("Windows")){
+        chromePath = "testing/chromedriver.exe";
+        phantomPath = "testing/phantomjs.exe";
+      }
+      else if(os.equals("Mac OS X")){
+        chromePath = "testing/chromedriver";
+        phantomPath = "testing/phantomjs";
+      }
+    System.out.println("Using "+chromePath+" or "+phantomPath);
+    }
 }
 public class Botto{
+    // ANSI COLORS FOR WELCOME
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_BLACK = "\u001B[30m";
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_YELLOW = "\u001B[33m";
+    public static final String ANSI_BLUE = "\u001B[34m";
+    public static final String ANSI_PURPLE = "\u001B[35m";
+    public static final String ANSI_CYAN = "\u001B[36m";
+    public static final String ANSI_WHITE = "\u001B[37m";
+    //
+
     private static ArrayList<Controller> Controllers = new ArrayList<Controller>();
     private static Controller getController(int index){
 	return Controllers.get(index);
     }
-    private static Controller makeController(String tag){
-	WebDriver driver = new ChromeDriver();
-	Controller discord = new Discord(driver,"discord");
-	Controllers.add(discord);
-	return discord;
+    private static Controller makeController(String tag, int determine){
+      WebDriver driver;
+      if(info.headless){
+        driver = new PhantomJSDriver();
+      }
+      else{
+        driver = new ChromeDriver();
+      }
+      driver.manage().window().setSize(new Dimension(1124,850));
+      if(determine == 0){
+        Controller discord = new Discord(driver,"discord");
+      	Controllers.add(discord);
+      	return discord;
+      }
+      else{
+        Controller messenger = new Messenger(driver,"messenger", "1856862454602853"); // the last arg is the fbid, which can be found from the url of messenger
+        Controllers.add(messenger);
+      	return messenger;
+      }
     }
     private static int tickLength = 1;
     private static int getTickLength(){
@@ -39,27 +86,67 @@ public class Botto{
     private static void removeController(int index){
 	Controllers.remove(index);
     }
+    public static void welcome(){
+      System.out.println("\n                                Welcome to "+ ANSI_CYAN + "botto"+ANSI_RESET+"!\n\nbotto is an"+ANSI_PURPLE+" easy to set up framework"+ANSI_RESET+" that allows you to "+ANSI_YELLOW+"turn your device into an instant IoT device.\n\nbotto supports channels such as discord, fb messenger, and slack,"+ANSI_RESET+" to let "+ANSI_GREEN+"you make your own programmable recipes.\n\nProgram Usage:"+ANSI_PURPLE+"\njava Controller [option]\n\n"+ANSI_GREEN+"Options include:"+ANSI_PURPLE+"\ndiscord\nmessenger\nslack\n"+ANSI_RESET);
+      Model.checkForSettings();
+    }
     public static void main(String[] args){
-	System.setProperty("webdriver.chrome.driver", info.chromePath);
-	makeController("discord").startup();
-	System.out.println("started up discord");
-	try{
-	    while(Controllers.size() > 0){
-		for(int i = 0;i < Controllers.size();i++){
-		    if(getController(i).getState().equals("dead")){
-			removeController(i);
-			i--;
-		    }
-		    else{
-			getController(i).tick();
-		    }
-		}
-		TimeUnit.SECONDS.sleep(tickLength);
-	    }
-	}
-	catch(Throwable e){
-	    e.printStackTrace();
-	}
+  if(args.length == 0){
+    welcome();
+    Model.checkForSettings();
+  }
+  else if(args.length == 1){
+    info.info();
+    if(args[0].equals("discord")){
+      info.determine = 0;
+      System.setProperty("webdriver.chrome.driver", info.chromePath);
+      System.setProperty("phantomjs.binary.path", info.phantomPath);
+    	makeController("discord", info.determine).startup();
+    	System.out.println("Started up discord");
+    	try{
+    	    while(Controllers.size() > 0){
+    		for(int i = 0;i < Controllers.size();i++){
+    		    if(getController(i).getState().equals("dead")){
+    			removeController(i);
+    			i--;
+    		    }
+    		    else{
+    			getController(i).tick();
+    		    }
+    		}
+    		TimeUnit.SECONDS.sleep(tickLength);
+    	    }
+    	}
+    	catch(Throwable e){
+    	    e.printStackTrace();
+    	}
+    }
+    else if(args[0].equals("messenger")){
+      info.determine = 1;
+      System.setProperty("webdriver.chrome.driver", info.chromePath);
+      System.setProperty("phantomjs.binary.path", info.phantomPath);
+    	makeController("messenger", info.determine).startup();
+      System.out.println("Started up messenger.");
+      try{
+    	    while(Controllers.size() > 0){
+    		for(int i = 0;i < Controllers.size();i++){
+    		    if(getController(i).getState().equals("dead")){
+    			removeController(i);
+    			i--;
+    		    }
+    		    else{
+    			getController(i).tick();
+    		    }
+    		}
+    		TimeUnit.SECONDS.sleep(tickLength);
+    	    }
+    	}
+    	catch(Throwable e){
+    	    e.printStackTrace();
+    	}
+    }
+  }
+
     }
 }
 class Controller{
@@ -91,16 +178,16 @@ class Controller{
 	if(x){
 	    counter = maxCounter;
 	}
-	else{  
+	else{
 	    if(counter == maxCounter){
-		
+
 		sleepTime = minSleepTime;
 	    }
 	    if(counter > 0){
 		counter -= 1;
 	    }
 	    else if(counter == 0){
-		
+
 		sleepTime = maxSleepTime;
 		counter -= 1;
 	    }
@@ -221,8 +308,8 @@ class Discord extends Controller{
 	    }
 	    driver.get("https://discordapp.com/channels/263162147792617482/263162147792617482");
 	    //System.out.println(getMessageGroup(driver));
-	    
-	    
+
+
 	    account = driver.findElement(By.className("account"));
 	    username = account.findElement(By.className("username")).getText();
 	    profilePic = profilePicCheck(account,"small");
@@ -267,7 +354,7 @@ class Discord extends Controller{
 			        send("exiting loop");
 				TimeUnit.SECONDS.sleep(1);
 				kill();
-				
+
 			    }
 			    updateSleepCounter(true);
 			}
