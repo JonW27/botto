@@ -1,6 +1,7 @@
 //place data and file reading functions here
 import java.io.*;
 import java.util.*;
+import static java.lang.System.out;
 public class Model{
   public static boolean yesNoPrompt(String prompt){
     Scanner reader = new Scanner(System.in);
@@ -12,15 +13,12 @@ public class Model{
     else if(result.equals("n")){
       return false;
     }
-    else{
-      System.out.println("Not in proper format... please try again.");
-      yesNoPrompt(prompt);
-    }
-    return false;
+    System.out.println("Not in proper format... please try again.");
+    return yesNoPrompt(prompt);
   }
   public static void addWhichOne(Boolean discord, Boolean messenger, Boolean slack, PrintWriter writer){
     Scanner reader = new Scanner(System.in);
-    System.out.println("Which credentials would you like to add? "+" (discord/messenger/slack)");
+    out.println("Which credentials would you like to add? "+" (discord/messenger/slack)");
     String result = reader.nextLine();
     String record = "";
     if(result.equals("discord") && !discord){
@@ -36,7 +34,7 @@ public class Model{
       slack = true;
     }
     else{
-      System.out.println("Not recognized... or already have credentials for channel.");
+      out.println("Not recognized... or already have credentials for channel.");
       addWhichOne(discord, messenger, slack, writer);
       return;
     }
@@ -46,7 +44,7 @@ public class Model{
     result += reader.nextLine();
     result += ":";
     Scanner reader3 = new Scanner(System.in);
-    System.out.println("Password of account:");
+    out.println("Password of account:");
     result += reader.nextLine();
     writer.println(result);
     if(yesNoPrompt("Would you like to repeat for a different channel?")){
@@ -57,7 +55,7 @@ public class Model{
   public static void checkForSettings(){
     File metadata = new File("mnf.botto");
     if(!metadata.exists()){
-      System.out.println("A mnf.botto file was not detected... is this your first time setting up botto?");
+      out.println("A mnf.botto file was not detected... is this your first time setting up botto?");
       if(yesNoPrompt("Would you like me to create a mnf.botto file for you?")){
         try{
           PrintWriter writer = new PrintWriter("mnf.botto", "UTF-8");

@@ -13,7 +13,10 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.JavascriptExecutor;
+
 
 public class Controller{
   public static final String ANSI_RESET = "\u001B[0m";
@@ -56,7 +59,7 @@ public class Controller{
     return str.substring(str.indexOf('\n') + 1,str.length());
   }
   public static void welcome(){
-    System.out.println("\n                                Welcome to "+ ANSI_CYAN + "botto"+ANSI_RESET+"!\n\nbotto is an"+ANSI_PURPLE+" easy to set up framework"+ANSI_RESET+" that allows you to "+ANSI_YELLOW+"turn your device into an instant IoT device.\n\nbotto supports channels such as discord, fb messenger, and slack,"+ANSI_RESET+"to let "+ANSI_GREEN+"you make your own programmable recipes.\n\nProgram Usage:"+ANSI_PURPLE+"\njava Controller [option]\n\n"+ANSI_GREEN+"Options include:"+ANSI_PURPLE+"\ndiscord\nmessenger\nslack\n"+ANSI_RESET);
+    System.out.println("\n                                Welcome to "+ ANSI_CYAN + "botto"+ANSI_RESET+"!\n\nbotto is an"+ANSI_PURPLE+" easy to set up framework"+ANSI_RESET+" that allows you to "+ANSI_YELLOW+"turn your device into an instant IoT device.\n\nbotto supports channels such as discord, fb messenger, and slack,"+ANSI_RESET+" to let "+ANSI_GREEN+"you make your own programmable recipes.\n\nProgram Usage:"+ANSI_PURPLE+"\njava Controller [option]\n\n"+ANSI_GREEN+"Options include:"+ANSI_PURPLE+"\ndiscord\nmessenger\nslack\n"+ANSI_RESET);
     Model.checkForSettings();
   }
     public static void getCommand(String markup){
@@ -141,125 +144,177 @@ public class Controller{
       welcome();
     }
     if(args.length == 1){
+      String lol = "testing/phantomjs";//testing/chromedriver"; // make this chromedriver.exe for Windows
+      //System.setProperty("webdriver.chrome.driver", lol);
+      System.setProperty("phantomjs.binary.path", lol);
+      DesiredCapabilities capabilities = new DesiredCapabilities();
+      capabilities.setCapability("phantomjs.page.settings.userAgent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:16.0) Gecko/20121026 Firefox/16.0");
+      WebDriver driver = new PhantomJSDriver(capabilities);// ChromeDriver();
+      driver.manage().window().setSize(new Dimension(1124,850));
       if(args[0].equals("discord")){
         // check priv.
         System.out.println("discord setting up...");
+        String discordChannel = "https://discordapp.com/channels/263162147792617482/263162147792617482"; // channel
+        try{
+          driver.get(discordChannel);
+          System.out.println("Scaffolding worked! "+ driver.getTitle());
+          try{
+            driver.findElement(By.id("register-email")).sendKeys("botto@haxsource.tech"); //email
+            driver.findElement(By.id("register-password")).sendKeys("RlenzPS6"); // password
+            driver.findElement(By.id("register-password")).submit();
+          }
+          catch(Exception l){
+
+          }
+          TimeUnit.SECONDS.sleep(5);
+          if(driver.findElements(By.className("markdown-modal-close")).size() > 0){
+            driver.findElement(By.className("markdown-modal-close")).click();
+          }
+          if(driver.findElements(By.xpath("//*[contains(text(), 'Skip')]")).size() > 0){
+            driver.findElement(By.xpath("//*[contains(text(), 'Skip')]")).click();
+          }
+          driver.get(discordChannel);
+          TimeUnit.SECONDS.sleep(2);
+          //driver.get("https://discordapp.com//api/v6/channels/263472881525194752/messages?limit=50");
+          System.out.println(getMessage(driver));
+          WebElement account = driver.findElement(By.className("account"));
+          String username = account.findElement(By.className("username")).getText();
+          String profilePic = profilePicCheck(account,"small");
+          String discriminator = account.findElement(By.className("discriminator")).getText();
+          String oldMessage = getMessageGroup(driver).getText();
+          String newMessage;
+          WebElement message;
+          String markup;
+          while(true){
+            message = getMessageGroup(driver);
+        	  markup = getMarkup(message);
+        	  newMessage = message.getText();
+        	  if(!(oldMessage.equals(newMessage))){
+        	      if(!(getUsername(message).equals(username) && profilePicCheck(message).equals(profilePic))){
+            		  getCommand(markup);
+            		  if(command.size() == 0){
+            		      command.add("null");
+            		  }
+            		  System.out.println(command);
+            		  if(markup.charAt(0) == '-'){
+          		      if(commandCheck("-time",false,0,0)){
+              			  send(driver,getTimeStamp(message));
+          		      }
+        		      else if(commandCheck("-profilePicCheck",false,0,0)){
+            			  send(driver,"I am");
+            			  send(driver,username);
+            			  send(driver,profilePic);
+            			  send(driver,"message from");
+            			  send(driver,profilePicCheck(message));
+        		      }
+        		      else if(commandCheck("-getDiscriminator",false,0,0)){
+            			  send(driver,getDiscriminator(driver,message));
+        		      }
+        		      else if(commandCheck("-break",false,0,0)){
+            			  send(driver,"exiting loop");
+            			  break;
+        		      }
+        		      updateSleepCounter(driver,true);
+        		  }
+        		  else{
+        		      if(commandCheck("hi",false,0,1)){
+            			  if(command.size() == 2){
+          			      if (command.get(1).equals(username)){
+              				  send(driver,"hello, that's me");
+        			        }
+        			      }
+        			      else{
+        			        send(driver,"hello " + getUsername(message));
+        			      }
+        		      }
+        		      else if(commandCheck("say",false,1,1)){
+        			         send(driver,command.get(1));
+        		      }
+        		      else if(commandCheck("break",false,0,0)){
+        			         send(driver,"the break command has been changed to -break");
+        		      }
+        		      updateSleepCounter(driver,true);
+        		  }
+        		  oldMessage = newMessage;
+        	  }
+        	  }
+        	  updateSleepCounter(driver,false);
+            TimeUnit.SECONDS.sleep(sleepTime);
+              //driver.navigate().refresh();
+          }
+          //System.out.println(driver.getPageSource());
+          TimeUnit.SECONDS.sleep(1);
+          driver.quit();
+        }
+        catch(Throwable e){
+          File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+          System.out.println(srcFile);
+          try{
+            FileUtils.copyFile(srcFile, new File("screen.png"));
+          }
+          catch(Exception f){
+
+          }
+          e.printStackTrace();
+        }
+
       }
       else if(args[0].equals("messenger")){
         // check priv.
-        System.out.println("messenger setting up...");
+        try{
+          System.out.println("messenger setting up...");
+          String messengerChannel = "https://mbasic.facebook.com";
+          driver.get(messengerChannel);
+          driver.findElement(By.className("_5ruq")).sendKeys("jonathan@haxsource.com");
+          driver.findElement(By.className("_27z3")).sendKeys("bottodemo1234");
+          driver.findElement(By.className("_27z3")).submit();
+          driver.get("https://mbasic.facebook.com/messages/read/?fbid=1856862454602853&_rdr");
+          try{
+            TimeUnit.SECONDS.sleep(2);
+          }
+          catch(Exception e){
+
+          }
+          //driver.findElement(By.className("_5f0v")).click();
+
+          //WebElement kmc = driver.findElement(By.className("_5rpu"));
+          //kmc.findElement(By.xpath("div/div")).sendKeys("testing... (Y)");
+          driver.findElement(By.tagName("textarea")).sendKeys("after several days... it works... 👊");
+          driver.findElement(By.tagName("textarea")).submit();
+          //WebElement sender = driver.findElement(By.xpath("//*[contains(text(), 'Send')]"));
+          //WebElement sender = driver.findElements(By.className("_30yy")).get(1);
+          //System.out.println(sender.getCssValue("display"));
+          //((JavascriptExecutor)driver).executeScript("arguments[0].style.visibility='visible';", sender);
+          //sender.click();
+          //System.out.println(driver.getTitle());
+          File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+          System.out.println(srcFile);
+          String text = "return document.body.innerHTML;";
+          String html = ((JavascriptExecutor) driver).executeScript(text).toString();
+          try{
+            FileUtils.copyFile(srcFile, new File("screen.png"));
+            FileUtils.writeStringToFile(new File("err.html"), html, "UTF-8");
+          }
+          catch(Exception f){
+
+          }
+          driver.quit();
+        }
+        catch(Exception e){
+          driver.quit();
+          try{
+            File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+            FileUtils.copyFile(srcFile, new File("screen.png"));
+          }
+          catch(Exception f){
+
+          }
+          e.printStackTrace();
+        }
       }
       else if(args[0].equals("slack")){
         // check priv.
         System.out.println("slack setting up...");
-      }
-      String lol = "testing/phantomjs";//chromedriver"; // make this chromedriver.exe for Windows
-      String discordChannel = "https://discordapp.com/channels/263162147792617482/263162147792617482"; // channel
-      //System.setProperty("webdriver.chrome.driver", lol);
-      System.setProperty("phantomjs.binary.path", lol);
-      WebDriver driver = new PhantomJSDriver();// ChromeDriver();
-      driver.manage().window().setSize(new Dimension(1124,850));
-      try{
-        driver.get(discordChannel);
-        System.out.println("Scaffolding worked! "+ driver.getTitle());
-        try{
-          driver.findElement(By.id("register-email")).sendKeys("botto@haxsource.tech"); //email
-          driver.findElement(By.id("register-password")).sendKeys("RlenzPS6"); // password
-          driver.findElement(By.id("register-password")).submit();
-        }
-        catch(Exception l){
-
-        }
-        TimeUnit.SECONDS.sleep(5);
-        if(driver.findElements(By.className("markdown-modal-close")).size() > 0){
-          driver.findElement(By.className("markdown-modal-close")).click();
-        }
-        if(driver.findElements(By.xpath("//*[contains(text(), 'Skip')]")).size() > 0){
-          driver.findElement(By.xpath("//*[contains(text(), 'Skip')]")).click();
-        }
-        driver.get(discordChannel);
-        TimeUnit.SECONDS.sleep(2);
-        //driver.get("https://discordapp.com//api/v6/channels/263472881525194752/messages?limit=50");
-        System.out.println(getMessage(driver));
-        WebElement account = driver.findElement(By.className("account"));
-        String username = account.findElement(By.className("username")).getText();
-        String profilePic = profilePicCheck(account,"small");
-        String discriminator = account.findElement(By.className("discriminator")).getText();
-        String oldMessage = getMessageGroup(driver).getText();
-        String newMessage;
-        WebElement message;
-        String markup;
-        while(true){
-          message = getMessageGroup(driver);
-      	  markup = getMarkup(message);
-      	  newMessage = message.getText();
-      	  if(!(oldMessage.equals(newMessage))){
-      	      if(!(getUsername(message).equals(username) && profilePicCheck(message).equals(profilePic))){
-          		  getCommand(markup);
-          		  if(command.size() == 0){
-          		      command.add("null");
-          		  }
-          		  System.out.println(command);
-          		  if(markup.charAt(0) == '-'){
-        		      if(commandCheck("-time",false,0,0)){
-            			  send(driver,getTimeStamp(message));
-        		      }
-      		      else if(commandCheck("-profilePicCheck",false,0,0)){
-          			  send(driver,"I am");
-          			  send(driver,username);
-          			  send(driver,profilePic);
-          			  send(driver,"message from");
-          			  send(driver,profilePicCheck(message));
-      		      }
-      		      else if(commandCheck("-getDiscriminator",false,0,0)){
-          			  send(driver,getDiscriminator(driver,message));
-      		      }
-      		      else if(commandCheck("-break",false,0,0)){
-          			  send(driver,"exiting loop");
-          			  break;
-      		      }
-      		      updateSleepCounter(driver,true);
-      		  }
-      		  else{
-      		      if(commandCheck("hi",false,0,1)){
-          			  if(command.size() == 2){
-        			      if (command.get(1).equals(username)){
-            				  send(driver,"hello, that's me");
-      			        }
-      			      }
-      			      else{
-      			        send(driver,"hello " + getUsername(message));
-      			      }
-      		      }
-      		      else if(commandCheck("say",false,1,1)){
-      			         send(driver,command.get(1));
-      		      }
-      		      else if(commandCheck("break",false,0,0)){
-      			         send(driver,"the break command has been changed to -break");
-      		      }
-      		      updateSleepCounter(driver,true);
-      		  }
-      		  oldMessage = newMessage;
-      	  }
-      	  }
-      	  updateSleepCounter(driver,false);
-          TimeUnit.SECONDS.sleep(sleepTime);
-            //driver.navigate().refresh();
-        }
-        //System.out.println(driver.getPageSource());
-        TimeUnit.SECONDS.sleep(1);
-        driver.quit();
-      }
-      catch(Throwable e){
-        File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-        System.out.println(srcFile);
-        try{
-          FileUtils.copyFile(srcFile, new File("screen.png"));
-        }
-        catch(Exception f){
-
-        }
-        e.printStackTrace();
       }
     }
   }
