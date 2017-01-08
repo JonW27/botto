@@ -13,8 +13,10 @@ public class Model{
     else if(result.equals("n")){
       return false;
     }
-    System.out.println("Not in proper format... please try again.");
-    return yesNoPrompt(prompt);
+    else{
+      System.out.println("Not in proper format... please try again.");
+      return yesNoPrompt(prompt);
+    }
   }
   public static void addWhichOne(Boolean discord, Boolean messenger, Boolean slack, PrintWriter writer){
     Scanner reader = new Scanner(System.in);
