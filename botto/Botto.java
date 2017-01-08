@@ -18,8 +18,8 @@ import org.openqa.selenium.JavascriptExecutor;
 
 class info{
     public static String os = System.getProperty("os.name");
-    public static String chromePath;
-    public static String phantomPath;
+    public static String chromePath = "testing/chromedriver.exe";
+    public static String phantomPath = "testing/phantomjs.exe";
     public static int determine;
     public static boolean headless = Model.yesNoPrompt("Use phantomjs (headless) to reduce overhead, instead of chrome browser?");
     public static void info(){
@@ -291,6 +291,8 @@ class Discord extends Controller{
     String newMessage;
     WebElement message;
     String markup;
+    String oldUsername;
+    String newUsername;
     public boolean startup(){
 	try{
 	    driver.get("https://discordapp.com/channels/263162147792617482/263162147792617482");
@@ -314,7 +316,9 @@ class Discord extends Controller{
 	    username = account.findElement(By.className("username")).getText();
 	    profilePic = profilePicCheck(account,"small");
 	    discriminator = account.findElement(By.className("discriminator")).getText();
-	    oldMessage = getMessageGroup().getText();
+	    WebElement x = getMessageGroup();
+	    oldMessage = x.getText();
+	    oldUsername = getUsername(x);
 	}
 	catch(Throwable e){
 	    e.printStackTrace();
@@ -328,7 +332,8 @@ class Discord extends Controller{
 		message = getMessageGroup();
 		markup = getMarkup(message);
 		newMessage = message.getText();
-		if(!(oldMessage.equals(newMessage))){
+		newUsername = getUsername(message);
+		if(!(oldMessage.equals(newMessage) && oldUsername.equals(newUsername))){
 		    if(!(getUsername(message).equals(username) &&
 			 profilePicCheck(message).equals(profilePic))){
 			getCommand(markup);
@@ -378,6 +383,7 @@ class Discord extends Controller{
 			    updateSleepCounter(true);
 			}
 			oldMessage = newMessage;
+			oldUsername = newUsername;
 		    }
 		}
 		updateSleepCounter(false);
