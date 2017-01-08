@@ -10,13 +10,32 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 
-public class Controller{
-    static int maxSleepTime = 5;
-    static int minSleepTime = 1;
-    static int sleepTime = 1;
-    static int maxCounter = 300;
-    static int counter = 300;
-    public static void updateSleepCounter(WebDriver driver,boolean x){
+class Controller{
+    private WebDriver driver;
+    private String state;
+    private String tag;
+    public Controller(WebDriver driver, String tag){
+	state = "on";
+	this.driver = driver;
+	this.tag = tag;
+    }
+    public String getTag(){
+	return tag;
+    }
+    private void kill(){
+	state = "dead";
+	driver.quit();
+    }
+    public String getState(){
+	return state;
+    }
+    int maxSleepTime = 5;
+    int minSleepTime = 1;
+    int sleepTime = 1;
+    int pause = 0;
+    int maxCounter = 300;
+    int counter = 300;
+    private void updateSleepCounter(WebDriver driver,boolean x){
 	if(x){
 	    counter = maxCounter;
 	}
@@ -35,8 +54,37 @@ public class Controller{
 	    }
 	}
     }
-    static ArrayList<String> command;
-    public static void getCommand(String markup){
+    public void startup(){
+	System.out.println("Controller class is meant to be extended");
+    }
+    public void tick(){
+    }
+    private void getCommand(String markuo){
+    }
+    private boolean commandCheck(String head,boolean unlimitedInputs,
+				       int minInputs,int maxInputs){
+    }
+    private WebElement getMessageGroup(){
+    }
+    private static String profilePicCheck(WebElement message, String x){
+    }
+    private static List<WebElement> getMarkups(WebElement message){
+    }
+    private static String getUsername(WebElement messageGroup){
+    }
+    private static String getTimeStamp(WebElement messageGroup){
+    }
+    private static boolean send(WebDriver driver,String str){
+    }
+    
+}
+
+class Discord extends Controller{
+    public Controller(WebDriver driver, String tag){
+	super(driver,tag);
+    }
+    private static ArrayList<String> command;
+    private void getCommand(String markup){
 	command = new ArrayList<String>();
 	markup += " ";
 	int i = 0;
@@ -59,27 +107,27 @@ public class Controller{
 	    i++;
 	}
     }
-    public static boolean commandCheck(String head,boolean unlimitedInputs,
+    private boolean commandCheck(String head,boolean unlimitedInputs,
 				       int minInputs,int maxInputs){
 	return command.get(0).equals(head) && command.size() - 1 >= minInputs &&
 	    (unlimitedInputs || command.size() - 1 <= maxInputs);
     }
-  public static WebElement getMessageGroup(WebDriver driver){
+    private WebElement getMessageGroup(){
     List<WebElement> messages = driver.findElements(By.className("message-group"));
     int size = messages.size();
     return messages.get(size - 1);
   }
-    public static String profilePicCheck(WebElement message, String x){
+    private static String profilePicCheck(WebElement message, String x){
      String url = message.findElement(By.className("avatar-" + x)).getAttribute("style");
      return url.substring(url.indexOf('"') + 1 ,url.lastIndexOf('"'));
     }
-    public static String profilePicCheck(WebElement message){
+    private static String profilePicCheck(WebElement message){
 	return profilePicCheck(message,"large");
     }
-    public static List<WebElement> getMarkups(WebElement message){
+    private static List<WebElement> getMarkups(WebElement message){
         return message.findElements(By.className("markup"));
     }
-    public static String getDiscriminator(WebDriver driver,WebElement message,String x){
+    private static String getDiscriminator(WebDriver driver,WebElement message,String x){
 	WebElement avatar = message.findElement(By.className("avatar-" + x));
 	avatar.click();
 	String discriminator = driver.findElement(By.className("user-popout"))
@@ -88,118 +136,131 @@ public class Controller{
 	avatar.click();
 	return discriminator;
     }
-    public static String getDiscriminator(WebDriver driver,WebElement message){
+    private static String getDiscriminator(WebDriver driver,WebElement message){
 	return getDiscriminator(driver,message,"large");
     }
-    public static String getMarkup(WebElement message){
+    private static String getMarkup(WebElement message){
 	int size = getMarkups(message).size();
 	return getMarkups(message).get(size - 1).getText();
     }
     //getUsername is not a valid way of identification
-    public static String getUsername(WebElement messageGroup){
+    private static String getUsername(WebElement messageGroup){
 	return messageGroup.findElement(By.className("user-name")).getText();
     }
-    public static String getTimeStamp(WebElement messageGroup){
+    private static String getTimeStamp(WebElement messageGroup){
 	return messageGroup.findElement(By.className("timestamp")).getText();
     }
-    public static boolean send(WebDriver driver,String str){
+    private static boolean send(WebDriver driver,String str){
       driver.findElement(By.tagName("textarea")).sendKeys(str);
       driver.findElement(By.tagName("textarea")).sendKeys(Keys.RETURN);
       return true;
     }
-  public static void main(String[] args){
-    String lol = "testing/chromedriver.exe";
-    System.setProperty("webdriver.chrome.driver", lol);
-    WebDriver driver = new ChromeDriver();
-    try{
-      driver.get("https://discordapp.com/channels/263162147792617482/263162147792617482");
-      System.out.println("Scaffolding worked! "+ driver.getTitle());
-      driver.findElement(By.id("register-email")).sendKeys("botto@haxsource.tech"); //email
-      driver.findElement(By.id("register-password")).sendKeys("RlenzPS6"); // password
-      driver.findElement(By.id("register-password")).submit();
-      TimeUnit.SECONDS.sleep(5);
-      if(driver.findElements(By.className("markdown-modal-close")).size() > 0){
-        driver.findElement(By.className("markdown-modal-close")).click();
-      }
-      if(driver.findElements(By.xpath("//*[contains(text(), 'Skip')]")).size() > 0){
-        TimeUnit.SECONDS.sleep(1);
-        driver.findElement(By.xpath("//*[contains(text(), 'Skip')]")).click();
-      }
-      driver.get("https://discordapp.com/channels/263162147792617482/263162147792617482");
-      //System.out.println(getMessageGroup(driver));
-
-     
-      WebElement account = driver.findElement(By.className("account"));
-      String username = account.findElement(By.className("username")).getText();
-      String profilePic = profilePicCheck(account,"small");
-      String discriminator = account.findElement(By.className("discriminator")).getText();
-      String oldMessage = getMessageGroup(driver).getText();
-      String newMessage;
-      WebElement message;
-      String markup;
-      while(true){
-	  message = getMessageGroup(driver);
-	  markup = getMarkup(message);
-	  newMessage = message.getText();
-	  if(!(oldMessage.equals(newMessage))){
-	      if(!(getUsername(message).equals(username) &&
-		   profilePicCheck(message).equals(profilePic))){
-		  getCommand(markup);
-		  if(command.size() == 0){
-		      command.add("null");
-		  }
-		  System.out.println(command);
-		  if(markup.charAt(0) == '-'){
-		      if(commandCheck("-time",false,0,0)){
-			  send(driver,getTimeStamp(message));
-		      }
-		      else if(commandCheck("-profilePicCheck",false,0,0)){
-			  send(driver,"I am");
-			  send(driver,username);
-			  send(driver,profilePic);
-			  send(driver,"message from");
-			  send(driver,profilePicCheck(message));
-		      }
-		      else if(commandCheck("-getDiscriminator",false,0,0)){
-			  send(driver,getDiscriminator(driver,message));
-		      }
-		      else if(commandCheck("-break",false,0,0)){
-			  send(driver,"exiting loop");
-			  break;
-		      }
-		      updateSleepCounter(driver,true);
-		  }
-		  else{
-		      if(commandCheck("hi",false,0,1)){
-			  if(command.size() == 2){
-			      if (command.get(1).equals(username)){
-				  send(driver,"hello, that's me");
-			      }
-			  }
-			  else{
-			      send(driver,"hello " + getUsername(message));
-			  }
-		      }
-		      else if(commandCheck("say",false,1,1)){
-			  send(driver,command.get(1));
-		      }
-		      else if(commandCheck("break",false,0,0)){
-			  send(driver,"the break command has been changed to -break");
-		      }
-		      updateSleepCounter(driver,true);
-		  }
-		  oldMessage = newMessage;
-	      }
-	  }
-	  updateSleepCounter(driver,false);
-	  TimeUnit.SECONDS.sleep(sleepTime);
-      }
-      //System.out.println(driver.getPageSource());
-      TimeUnit.SECONDS.sleep(1);
-      driver.quit();
+    WebElement account;
+    String username;
+    String profilePic;
+    String discriminator;
+    String oldMessage;
+    String newMessage;
+    WebElement message;
+    String markup;
+    public void startup(){
+	try{
+	    driver.get("https://discordapp.com/channels/263162147792617482/263162147792617482");
+	    System.out.println("Scaffolding worked! "+ driver.getTitle());
+	    driver.findElement(By.id("register-email")).sendKeys("botto@haxsource.tech"); //email
+	    driver.findElement(By.id("register-password")).sendKeys("RlenzPS6"); // password
+	    driver.findElement(By.id("register-password")).submit();
+	    TimeUnit.SECONDS.sleep(5);
+	    if(driver.findElements(By.className("markdown-modal-close")).size() > 0){
+		driver.findElement(By.className("markdown-modal-close")).click();
+	    }
+	    if(driver.findElements(By.xpath("//*[contains(text(), 'Skip')]")).size() > 0){
+		TimeUnit.SECONDS.sleep(1);
+		driver.findElement(By.xpath("//*[contains(text(), 'Skip')]")).click();
+	    }
+	    driver.get("https://discordapp.com/channels/263162147792617482/263162147792617482");
+	    //System.out.println(getMessageGroup(driver));
+	    
+	    
+	    account = driver.findElement(By.className("account"));
+	    username = account.findElement(By.className("username")).getText();
+	    profilePic = profilePicCheck(account,"small");
+	    discriminator = account.findElement(By.className("discriminator")).getText();
+	    oldMessage = getMessageGroup(driver).getText();
+	    newMessage;
+	    message;
+	    markup;
+	    catch(Throwable e){
+		e.printStackTrace();
+	    }
+	}
     }
-    catch(Throwable e){
-      e.printStackTrace();
+    public void tick(){
+	if(pause <= 0 and state.equals("on")){
+	    pause = sleepTime;
+	try{
+	    message = getMessageGroup();
+	    markup = getMarkup(message);
+	    newMessage = message.getText();
+	    if(!(oldMessage.equals(newMessage))){
+		if(!(getUsername(message).equals(username) &&
+		     profilePicCheck(message).equals(profilePic))){
+		    getCommand(markup);
+		    if(command.size() == 0){
+			command.add("null");
+		    }
+		    //System.out.println(command);
+		    if(markup.charAt(0) == '-'){
+			if(commandCheck("-time",false,0,0)){
+			    send(driver,getTimeStamp(message));
+			}
+			else if(commandCheck("-profilePicCheck",false,0,0)){
+			    send(driver,"I am");
+			    send(driver,username);
+			    send(driver,profilePic);
+			    send(driver,"message from");
+			    send(driver,profilePicCheck(message));
+			}
+			else if(commandCheck("-getDiscriminator",false,0,0)){
+			    send(driver,getDiscriminator(driver,message));
+			}
+			else if(commandCheck("-break",false,0,0)){
+			    send(driver,"exiting loop");
+			    kill();
+			}
+			updateSleepCounter(driver,true);
+		    }
+		    else{
+			if(commandCheck("hi",false,0,1)){
+			    if(command.size() == 2){
+				if (command.get(1).equals(username)){
+				    send(driver,"hello, that's me");
+				}
+			    }
+			    else{
+				send(driver,"hello " + getUsername(message));
+			    }
+			}
+			else if(commandCheck("say",false,1,1)){
+			    send(driver,command.get(1));
+			}
+			else if(commandCheck("break",false,0,0)){
+			    send(driver,"the break command has been changed to -break");
+			}
+			updateSleepCounter(driver,true);
+		    }
+		    oldMessage = newMessage;
+		}
+	    }
+	    updateSleepCounter(driver,false);
+	}
+	//System.out.println(driver.getPageSource());
+	catch(Throwable e){
+	    e.printStackTrace();
+	}
+	}
+	else{
+	    pause--;
+	}
     }
-  }
 }
