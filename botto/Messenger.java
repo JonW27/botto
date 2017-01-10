@@ -81,7 +81,7 @@ class Messenger extends Controller{
     }
     private String getTimeStamp(WebElement messageGroup){
       Calendar calendar = Calendar.getInstance();
-      SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+      SimpleDateFormat format = new SimpleDateFormat("HH:mm");
 	    return format.format(calendar.getTime());
     }
     private void send(String str){
@@ -140,11 +140,33 @@ class Messenger extends Controller{
             System.out.println("checked msg");
 				send((getTimeStamp(message)));
 			    }
+          else if(commandCheck("-term",false,1,20)){
+            System.out.println("terminal command launched");
+            String output = "";
+            try{
+          	    String command = newMessage.substring(5);
+
+          	    Process proc = Runtime.getRuntime().exec(command);
+
+          	    // Read the output
+
+          	    BufferedReader reader =
+          		new BufferedReader(new InputStreamReader(proc.getInputStream()));
+          	    String line = "";
+          	    while((line = reader.readLine()) != null) {
+          		output = output + line + "\n";
+          	    }
+          	    proc.waitFor();
+          	}
+          	catch(Throwable e){
+          	    e.printStackTrace();
+          	}
+            send(output);
+          }
 			    else if(commandCheck("-break",false,0,0)){
 			        send("exiting loop");
-				TimeUnit.SECONDS.sleep(1);
-				kill();
-
+				      TimeUnit.SECONDS.sleep(1);
+				      kill();
 			    }
 			    updateSleepCounter(true);
 			}
@@ -158,6 +180,14 @@ class Messenger extends Controller{
 			    else if(commandCheck("break",false,0,0)){
 				send("the break command has been changed to -break");
 			    }
+          else if(newMessage.equals("quote mr k")){
+            String mrkquotes[] = {"I can say that during a plague, I would be more proactive in ensuring that sick people are burned.",
+"Isn't it okay to hang one student per year so that the rest of them are happy?", "If I hated you, I can guarantee that you would not know.", "I'm not racist, I just go around quoting Rza lyrics.", "If the only thing I teach you is when not to speak, then I will have done the world a great service.", "The next time you do that, I will fix you",
+"Best Friends Forever are really just Best Friends For Now, unless one of you is dead already.", "If I were let loose in a room full of anti-vaxxers...I would only want that if I had a vial of measles.",
+"You are the Stable Boy Scrubber!", "When I said I would fix him, I didn't know what I was agreeing to. It's like when you agree to shovel someone's driveway and they live 300ft. into their property.", "Some pokemon look tastier than others.", "On the bright side, they won't live long enough to retaliate", "Students are killable", "I can hit students as long as they don't survive to complain about it"};
+            Random picker = new Random();
+            send(mrkquotes[picker.nextInt(mrkquotes.length)]);
+          }
 			    updateSleepCounter(true);
 			}
 			oldMessage = newMessage;
@@ -169,7 +199,15 @@ class Messenger extends Controller{
 		send("nice picture");
 	    }
 	    catch(Throwable e){
-		e.printStackTrace();
+		      e.printStackTrace();
+          send("That's an error mate.");
+          driver.get("https://mbasic.facebook.com/messages/read/?fbid="+page+"&_rdr");
+          try{
+            TimeUnit.SECONDS.sleep(1);
+          }
+          catch(Exception q){
+
+          }
 	    }
 	}
 	else{

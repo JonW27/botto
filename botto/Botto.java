@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.concurrent.TimeUnit;
 import java.net.InetAddress;
 //import com.sun.mail.smtp.*;
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
@@ -207,6 +208,7 @@ class Discord extends Controller{
     public Discord(WebDriver driver, String tag){
 	super(tag);
 	this.driver = driver;
+  driver.manage().window().setSize(new Dimension(1124,850));
     }
     private void kill(){
 	setState("dead");
@@ -296,10 +298,18 @@ class Discord extends Controller{
     public boolean startup(){
 	try{
 	    driver.get("https://discordapp.com/channels/263162147792617482/263162147792617482");
+      TimeUnit.SECONDS.sleep(2);
 	    System.out.println("Scaffolding worked! "+ driver.getTitle());
+      File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+      FileUtils.copyFile(srcFile, new File("screen.png"));
+      try{
 	    driver.findElement(By.id("register-email")).sendKeys("botto@haxsource.tech"); //email
 	    driver.findElement(By.id("register-password")).sendKeys("RlenzPS6"); // password
 	    driver.findElement(By.id("register-password")).submit();
+      }
+      catch(Exception l){
+
+      }
 	    TimeUnit.SECONDS.sleep(5);
 	    if(driver.findElements(By.className("markdown-modal-close")).size() > 0){
 		driver.findElement(By.className("markdown-modal-close")).click();
@@ -309,6 +319,8 @@ class Discord extends Controller{
 		driver.findElement(By.xpath("//*[contains(text(), 'Skip')]")).click();
 	    }
 	    driver.get("https://discordapp.com/channels/263162147792617482/263162147792617482");
+      File srcFil = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+      FileUtils.copyFile(srcFil, new File("screen.png"));
 	    //System.out.println(getMessageGroup(driver));
 
 
@@ -321,6 +333,13 @@ class Discord extends Controller{
 	    oldUsername = getUsername(x);
 	}
 	catch(Throwable e){
+      File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+      try{
+        FileUtils.copyFile(srcFile, new File("screen.png"));
+      }
+      catch(Exception f){
+
+      }
 	    e.printStackTrace();
 	}
 	return true;
