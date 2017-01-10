@@ -5,3 +5,5 @@ ignore/*
 botto/testing/chromedriver.exe
 botto/phantomjsdriver.log
 *.png
+/botto/testMain.java
+/botto/testMain.class
