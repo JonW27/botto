@@ -146,10 +146,10 @@ class Messenger extends Controller{
             try{
           	    String command = newMessage.substring(5);
                 String[] commands = command.split("\\|", -1);
-                if(Arrays.asList(commands).contains("cd")){
+                /*if(Arrays.asList(commands).contains("cd")){
 
                 }
-                else{
+                else{*/
                   Process proc = Runtime.getRuntime().exec(command);
 
             	    // Read the output
@@ -159,7 +159,7 @@ class Messenger extends Controller{
             	    String line = "";
             	    while((line = reader.readLine()) != null) {
             		output = output + line + "\n";
-            	    }
+            	    //}
                 }
           	    proc.waitFor();
           	}

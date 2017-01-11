@@ -1,9 +1,10 @@
+import org.openqa.selenium.WebDriver;
 import org.apache.commons.io.FileUtils;
 import java.util.*;
 import java.io.File;
 public class OV{
 	public static void main(String args[]){
-		String string = "import org.openqa.selenium.WebDriver;\n";
+		String string = "import their.extension.bla.bla;\n";
 		try{
 			File file = new File("OV.java");
 			List fix = FileUtils.readLines(file, "UTF-8");
