@@ -63,6 +63,8 @@ public class Botto{
       driver.manage().window().setSize(new Dimension(1124,850));
       if(determine == 0){
 	  Controller plugin = new plugin(driver,"plugins");
+	  Controllers.add(plugin);
+	  return plugin;
       }
       else if(determine == 1){
         Controller discord = new Discord(driver,"discord");
