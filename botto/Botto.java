@@ -98,39 +98,20 @@ public class Botto{
   }
   else if(args.length == 1){
     info.info();
+    System.setProperty("webdriver.chrome.driver", info.chromePath);
+    System.setProperty("phantomjs.binary.path", info.phantomPath);
     if(args[0].equals("discord")){
-      info.determine = 0;
-      System.setProperty("webdriver.chrome.driver", info.chromePath);
-      System.setProperty("phantomjs.binary.path", info.phantomPath);
-    	makeController("discord", info.determine).startup();
-    	System.out.println("Started up discord");
-    	try{
-    	    while(Controllers.size() > 0){
-    		for(int i = 0;i < Controllers.size();i++){
-    		    if(getController(i).getState().equals("dead")){
-    			removeController(i);
-    			i--;
-    		    }
-    		    else{
-    			getController(i).tick();
-    		    }
-    		}
-    		TimeUnit.SECONDS.sleep(tickLength);
-    	    }
-    	}
-    	catch(Throwable e){
-    	    e.printStackTrace();
-    	}
+	info.determine = 0;
     }
     else if(args[0].equals("messenger")){
-      info.determine = 1;
-      System.setProperty("webdriver.chrome.driver", info.chromePath);
-      System.setProperty("phantomjs.binary.path", info.phantomPath);
-    	makeController("messenger", info.determine).startup();
-      System.out.println("Started up messenger.");
+	info.determine = 1;
+    }
+    makeController(arg[0], info.determine).startup();
+    System.out.println("Started up " + args[0]);
+    int i;
       try{
     	    while(Controllers.size() > 0){
-    		for(int i = 0;i < Controllers.size();i++){
+    		for(i = 0;i < Controllers.size();i++){
     		    if(getController(i).getState().equals("dead")){
     			removeController(i);
     			i--;
@@ -143,9 +124,9 @@ public class Botto{
     	    }
     	}
     	catch(Throwable e){
+	    removeController(i);
     	    e.printStackTrace();
     	}
-    }
   }
 
     }
@@ -169,31 +150,12 @@ class Controller{
     void setState(String x){
 	state = x;
     }
+    int sleepTime = 1;
     int maxSleepTime = 5;
     int minSleepTime = 1;
-    int sleepTime = 1;
     int pause = 0;
     int maxCounter = 300;
     int counter = 300;
-    void updateSleepCounter(boolean x){
-	if(x){
-	    counter = maxCounter;
-	}
-	else{
-	    if(counter == maxCounter){
-
-		sleepTime = minSleepTime;
-	    }
-	    if(counter > 0){
-		counter -= 1;
-	    }
-	    else if(counter == 0){
-
-		sleepTime = maxSleepTime;
-		counter -= 1;
-	    }
-	}
-    }
     public boolean startup(){
 	System.out.println("Controller class is meant to be extended");
 	return false;
@@ -215,6 +177,25 @@ class Discord extends Controller{
 	driver.quit();
     }
     private ArrayList<String> command;
+    private void updateSleepCounter(boolean x){
+	if(x){
+	    counter = maxCounter;
+	}
+	else{
+	    if(counter == maxCounter){
+
+		sleepTime = minSleepTime;
+	    }
+	    if(counter > 0){
+		counter -= 1;
+	    }
+	    else if(counter == 0){
+
+		sleepTime = maxSleepTime;
+		counter -= 1;
+	    }
+	}
+    }
     private void getCommand(String markup){
 	command = new ArrayList<String>();
 	markup += " ";
