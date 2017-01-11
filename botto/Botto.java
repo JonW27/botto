@@ -103,7 +103,6 @@ public class Botto{
       System.setProperty("webdriver.chrome.driver", info.chromePath);
       System.setProperty("phantomjs.binary.path", info.phantomPath);
     	makeController("discord", info.determine).startup();
-    	System.out.println("Started up discord");
     	try{
     	    while(Controllers.size() > 0){
     		for(int i = 0;i < Controllers.size();i++){
@@ -295,9 +294,10 @@ class Discord extends Controller{
     String markup;
     String oldUsername;
     String newUsername;
+    String discordChannel = "https://discordapp.com/channels/263162147792617482/263162147792617482";
     public boolean startup(){
 	try{
-	    driver.get("https://discordapp.com/channels/263162147792617482/263162147792617482");
+	    driver.get(discordChannel);
       TimeUnit.SECONDS.sleep(2);
 	    System.out.println("Scaffolding worked! "+ driver.getTitle());
       File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
@@ -311,6 +311,11 @@ class Discord extends Controller{
 
       }
 	    TimeUnit.SECONDS.sleep(5);
+      if(driver.getCurrentUrl().equals(discordChannel) || driver.getCurrentUrl().equals("https://discordapp.com/login")){
+        System.out.println("Check your email! Discord detected a new location or IP!");
+        kill();
+        return false;
+      }
 	    if(driver.findElements(By.className("markdown-modal-close")).size() > 0){
 		driver.findElement(By.className("markdown-modal-close")).click();
 	    }
@@ -342,6 +347,7 @@ class Discord extends Controller{
       }
 	    e.printStackTrace();
 	}
+  System.out.println("Started up discord");
 	return true;
     }
     public boolean tick(){

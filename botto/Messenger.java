@@ -145,17 +145,22 @@ class Messenger extends Controller{
             String output = "";
             try{
           	    String command = newMessage.substring(5);
+                String[] commands = command.split("\\|", -1);
+                /*if(Arrays.asList(commands).contains("cd")){
 
-          	    Process proc = Runtime.getRuntime().exec(command);
+                }
+                else{*/
+                  Process proc = Runtime.getRuntime().exec(command);
 
-          	    // Read the output
+            	    // Read the output
 
-          	    BufferedReader reader =
-          		new BufferedReader(new InputStreamReader(proc.getInputStream()));
-          	    String line = "";
-          	    while((line = reader.readLine()) != null) {
-          		output = output + line + "\n";
-          	    }
+            	    BufferedReader reader =
+            		new BufferedReader(new InputStreamReader(proc.getInputStream()));
+            	    String line = "";
+            	    while((line = reader.readLine()) != null) {
+            		output = output + line + "\n";
+            	    //}
+                }
           	    proc.waitFor();
           	}
           	catch(Throwable e){
