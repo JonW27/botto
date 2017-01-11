@@ -62,11 +62,14 @@ public class Botto{
       }
       driver.manage().window().setSize(new Dimension(1124,850));
       if(determine == 0){
+	  Controller plugin = new plugin(driver,"plugins");
+      }
+      else if(determine == 1){
         Controller discord = new Discord(driver,"discord");
       	Controllers.add(discord);
       	return discord;
       }
-      else{
+      else if(determine == 2){
         Controller messenger = new Messenger(driver,"messenger", "1856862454602853"); // the last arg is the fbid, which can be found from the url of messenger
         Controllers.add(messenger);
       	return messenger;
@@ -100,11 +103,12 @@ public class Botto{
     info.info();
     System.setProperty("webdriver.chrome.driver", info.chromePath);
     System.setProperty("phantomjs.binary.path", info.phantomPath);
+
     if(args[0].equals("discord")){
-	info.determine = 0;
+	info.determine = 1;
     }
     else if(args[0].equals("messenger")){
-	info.determine = 1;
+	info.determine = 2;
     }
     makeController(arg[0], info.determine).startup();
     System.out.println("Started up " + args[0]);
