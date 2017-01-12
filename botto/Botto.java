@@ -50,6 +50,7 @@ public class Botto{
     //
     private static int pluginNum = 0;
     private static ArrayList<Controller> Controllers = new ArrayList<Controller>();
+    private static ArrayList<WebDriver> Drivers = new ArrayList<WebDriver>();
     private static Controller lastPlugin = new Controller();
     private static Controller getController(int index){
 	return Controllers.get(index);
@@ -63,32 +64,37 @@ public class Botto{
         driver = new ChromeDriver();
       }
       driver.manage().window().setSize(new Dimension(1124,850));
+      /* working on it
       if(determine == 0){
-	  Controller p = lastPlugin.nextPlugin(driver,"plugin" + pluginNum++);
+	  Controller p = lastPlugin.nextPlugin(driver,"plugin");
 	  Controllers.add(p);
+	  pluginNum++;
 	  return p;
       }
-      else if(determine == 1){
+      */
+      if(determine == 1){
         Controller discord = new Discord(driver,"discord");
       	Controllers.add(discord);
+	Drivers.add(driver);
       	return discord;
       }
       else if(determine == 2){
         Controller messenger = new Messenger(driver,"messenger", "1856862454602853"); // the last arg is the fbid, which can be found from the url of messenger
         Controllers.add(messenger);
+	Drivers.add(driver);
       	return messenger;
       }
       else{
-	  Controller x = new Controller("default");
+	  Controller x = new Controller("default",false);
 	  System.out.println("defaulting to Controller, did you spell something wrong?");
 	  return x;
       }
     }
     private static int tickLength = 1;
-    private static int getTickLength(){
+    static int getTickLength(){
 	return tickLength;
     }
-    private static int getControllerIndex(String tag){
+    static int getControllerIndex(String tag){
     	for(int i = 0;i < Controllers.size();i++){
     	    if(getController(i).getTag().equals(tag)){
     		return i;
@@ -98,6 +104,7 @@ public class Botto{
     }
     private static void removeController(int index){
 	Controllers.remove(index);
+	Drivers.remove(index);
     }
     public static void welcome(){
       System.out.println("\n                                Welcome to "+ ANSI_CYAN + "botto"+ANSI_RESET+"!\n\nbotto is an"+ANSI_PURPLE+" easy to set up framework"+ANSI_RESET+" that allows you to "+ANSI_YELLOW+"turn your device into an instant IoT device.\n\nbotto supports channels such as discord, fb messenger, and slack,"+ANSI_RESET+" to let "+ANSI_GREEN+"you make your own programmable recipes.\n\nProgram Usage:"+ANSI_PURPLE+"\njava Controller [option]\n\n"+ANSI_GREEN+"Options include:"+ANSI_PURPLE+"\ndiscord\nmessenger\nslack\n"+ANSI_RESET);
@@ -159,6 +166,12 @@ class Controller{
     Controller(String tag){
 	state = "on";
 	this.tag = tag;
+    }
+    Controller(String tag,Boolean death){
+	if(death == false){
+	    state = "dead";
+	    this.tag = tag;
+	}
     }
     Controller(WebDriver driver, String tag){
 	state = "on";
