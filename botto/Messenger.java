@@ -25,11 +25,30 @@ class Messenger extends Controller{
     	this.driver = driver;
       this.page = page;
     }
-    private void kill(){
+    void kill(){
     	setState("dead");
     	driver.quit();
     }
     private ArrayList<String> command;
+    private void updateSleepCounter(boolean x){
+	if(x){
+	    counter = maxCounter;
+	}
+	else{
+	    if(counter == maxCounter){
+
+		sleepTime = minSleepTime;
+	    }
+	    if(counter > 0){
+		counter -= 1;
+	    }
+	    else if(counter == 0){
+
+		sleepTime = maxSleepTime;
+		counter -= 1;
+	    }
+	}
+    }
     private void getCommand(String markup){
 	command = new ArrayList<String>();
 	markup += " ";

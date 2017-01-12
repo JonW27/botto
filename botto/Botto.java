@@ -47,8 +47,9 @@ public class Botto{
     public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_WHITE = "\u001B[37m";
     //
-
+    private static int pluginNum = 0;
     private static ArrayList<Controller> Controllers = new ArrayList<Controller>();
+    private static Controller lastPlugin = new Plugin("first");
     private static Controller getController(int index){
 	return Controllers.get(index);
     }
@@ -62,9 +63,9 @@ public class Botto{
       }
       driver.manage().window().setSize(new Dimension(1124,850));
       if(determine == 0){
-	  Controller plugin = new plugin(driver,"plugins");
-	  Controllers.add(plugin);
-	  return plugin;
+	  Controller p = lastPlugin.nextPlugin(driver,"plugin" + pluginNum++);
+	  Controllers.add(p);
+	  return p;
       }
       else if(determine == 1){
         Controller discord = new Discord(driver,"discord");
@@ -75,6 +76,11 @@ public class Botto{
         Controller messenger = new Messenger(driver,"messenger", "1856862454602853"); // the last arg is the fbid, which can be found from the url of messenger
         Controllers.add(messenger);
       	return messenger;
+      }
+      else{
+	  Controller x = new Controller("default");
+	  System.out.println("defaulting to Controller, did you spell something wrong?");
+	  return x;
       }
     }
     private static int tickLength = 1;
@@ -96,6 +102,10 @@ public class Botto{
       System.out.println("\n                                Welcome to "+ ANSI_CYAN + "botto"+ANSI_RESET+"!\n\nbotto is an"+ANSI_PURPLE+" easy to set up framework"+ANSI_RESET+" that allows you to "+ANSI_YELLOW+"turn your device into an instant IoT device.\n\nbotto supports channels such as discord, fb messenger, and slack,"+ANSI_RESET+" to let "+ANSI_GREEN+"you make your own programmable recipes.\n\nProgram Usage:"+ANSI_PURPLE+"\njava Controller [option]\n\n"+ANSI_GREEN+"Options include:"+ANSI_PURPLE+"\ndiscord\nmessenger\nslack\n"+ANSI_RESET);
       Model.checkForSettings();
     }
+    private static void setValues(){
+	System.setProperty("webdriver.chrome.driver", info.chromePath);
+	System.setProperty("phantomjs.binary.path", info.phantomPath);
+    }
     public static void main(String[] args){
   if(args.length == 0){
     welcome();
@@ -103,18 +113,23 @@ public class Botto{
   }
   else if(args.length == 1){
     info.info();
-    System.setProperty("webdriver.chrome.driver", info.chromePath);
-    System.setProperty("phantomjs.binary.path", info.phantomPath);
-
+    setValues();
     if(args[0].equals("discord")){
 	info.determine = 1;
     }
     else if(args[0].equals("messenger")){
 	info.determine = 2;
     }
-    makeController(arg[0], info.determine).startup();
+    else if(args.length == 2){
+	info.info();
+	setValues();
+	if(args[0].equals("plugin")){
+	    info.determine = 0;
+	}
+    }
+    makeController(args[0], info.determine).startup();
     System.out.println("Started up " + args[0]);
-    int i;
+    int i = 0;
       try{
     	    while(Controllers.size() > 0){
     		for(i = 0;i < Controllers.size();i++){
@@ -144,10 +159,15 @@ class Controller{
 	state = "on";
 	this.tag = tag;
     }
+    Controller(WebDriver driver, String tag){
+	state = "on";
+	this.tag = tag;
+	System.out.println("not meant to be used with a WebDriver");
+    }
     public String getTag(){
 	return tag;
     }
-    private void kill(){
+    void kill(){
 	state = "dead";
     }
     public String getState(){
@@ -163,11 +183,15 @@ class Controller{
     int maxCounter = 300;
     int counter = 300;
     public boolean startup(){
-	System.out.println("Controller class is meant to be extended");
+	System.out.println("this class is not meant to be started up");
 	return false;
     }
     public boolean tick(){
 	return false;
+    }
+    Controller nextPlugin(WebDriver driver,String tag){
+	Controller plugin = new Plugin(driver,tag);
+	return plugin;
     }
 }
 
@@ -178,7 +202,7 @@ class Discord extends Controller{
 	this.driver = driver;
   driver.manage().window().setSize(new Dimension(1124,850));
     }
-    private void kill(){
+    void kill(){
 	setState("dead");
 	driver.quit();
     }

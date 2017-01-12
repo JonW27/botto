@@ -1,5 +1,5 @@
 class experimentPart2{
-    public static String go(){
-	return "bye";
+    public void go(){
+	System.out.println("bye");
     }
 }
