@@ -1,12 +1,12 @@
 import org.openqa.selenium.WebDriver;
-class Plugin0 extends Controller{//can also extend discord and messenger
+class Plugin1 extends Controller{//can also extend discord and messenger
     //maybe able to extend other plugins
     private WebDriver driver;
-    Plugin0(WebDriver driver,String tag){
+    Plugin1(WebDriver driver,String tag){
 	super(tag);
 	this.driver = driver;
     }
-    Plugin0(WebDriver driver){
+    Plugin1(WebDriver driver){
 	super("PluginNameGoesHere");
 	this.driver = driver;
     }
@@ -40,8 +40,10 @@ class Plugin0 extends Controller{//can also extend discord and messenger
 	    makeErrorReport(e);
 	}
     }
+    /*
     Controller nextPlugin(WebDriver driver){
-	Controller plugin = new Plugin1(driver);
+	Controller plugin = new Plugin2(driver);
 	return plugin;
     }
+    */
 }

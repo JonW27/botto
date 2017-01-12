@@ -64,8 +64,9 @@ public class Botto{
       }
       driver.manage().window().setSize(new Dimension(1124,850));
       if(determine == 0){
-	  Controller p = lastPlugin.nextPlugin(driver,"plugin" + pluginNum++);
+	  Controller p = lastPlugin.nextPlugin(driver,"plugin");
 	  Controllers.add(p);
+	  pluginNum++;
 	  return p;
       }
       else if(determine == 1){
