@@ -16,6 +16,7 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
+import java.text.SimpleDateFormat;
 
 class info{
     public static String os = System.getProperty("os.name");
@@ -355,6 +356,40 @@ class Discord extends Controller{
 	}
 	return true;
     }
+    void makeErrorReport(Exception e){
+	StringWriter errors = new StringWriter();
+	e.printStackTrace(new PrintWriter(errors));
+	try{
+	    send("plugin crashed");
+	    send(errors.toString());
+	}
+	catch(Exception f){
+	    System.out.println("plugin crashed");
+	    f.printStackTrace();
+	}
+	try{
+	    FileWriter a = new FileWriter("crash-report.log",true);
+	    BufferedWriter b = new BufferedWriter(a);
+	    PrintWriter writer = new PrintWriter(b);
+	    Calendar calendar = Calendar.getInstance();
+	    SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+	    writer.println(format.format(calendar.getTime()) + "\n");
+	    writer.println(errors.toString() + "\n");
+	    writer.println("-------------------\n");
+	}
+	catch (IOException g){
+	    System.out.println("all hope is lost, all try blocks have failed");
+	    g.printStackTrace();
+	}
+    }
+    void pluginTick(){
+	try{
+	    runPlugins();
+	}
+	catch(Exception e){
+	    makeErrorReport(e);
+	}
+    }
     public boolean tick(){
 	if(pause <= 0 && getState().equals("on")){
 	    pause = sleepTime;
@@ -409,6 +444,10 @@ class Discord extends Controller{
 			    }
 			    else if(commandCheck("break",false,0,0)){
 				send("the break command has been changed to -break");
+			    }
+			    else{
+				pluginTick();
+				}
 			    }
 			    updateSleepCounter(true);
 			}

@@ -11,7 +11,7 @@ class Plugin0 extends Controller{//can also extend discord and messenger
 	return true;
     }
     public boolean tick(){
-	//inseart tick code here
+	//insert tick code here
 	return true;
     }
     /*
@@ -20,5 +20,4 @@ class Plugin0 extends Controller{//can also extend discord and messenger
 	return plugin;
     }
     */
-    //^^^ will be commented out once plugin0 is created
 }
