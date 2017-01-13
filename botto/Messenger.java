@@ -166,7 +166,9 @@ class Messenger extends Controller{
           	catch(Throwable e){
           	    e.printStackTrace();
           	}
-            send(output);
+            if(!output.equals("")){
+              send(output);
+            }
           }
 			    else if(commandCheck("-break",false,0,0)){
 			        send("exiting loop");
@@ -193,6 +195,12 @@ class Messenger extends Controller{
             Random picker = new Random();
             send(mrkquotes[picker.nextInt(mrkquotes.length)]);
           }
+          else if(newMessage.equals("quote mr brown")){
+            String mrbrownquotes[] = {"Binary Feedback!","Thumbs!", "Damn right you are!", "Yip Yip Yip, TRIO, TRIO!!!", "Procure a KtS", "Volunteers?", "Do not go onto the Interwebz.", "Daz a nice!", "I can’t keep calling on PChan", "PChan has reached his quota for the period", "Don’t turn on your machines just yet", "Always look at the QAF!!", "Easy tigers!", "You are the next hope of this country.", "JA", "My other period of thinkers....", "Thinkers!", "‘Twas an epic battle, to be sure… You cut ye old monster down, but with its dying breath ye old monster laid a fatal blow upon thy skull.", "Ye olde self hath expired. You got dead.", "Damn right, son!", "Mr. Me", "Get your collectibles", "I smell something in the oven!", "A day of relaxation", "Breathe….", "Song of the week"};
+            Random picker = new Random();
+            send(mrbrownquotes[picker.nextInt(mrbrownquotes.length)]);
+
+          }
 			    updateSleepCounter(true);
 			}
 			oldMessage = newMessage;
@@ -205,8 +213,8 @@ class Messenger extends Controller{
 	    }
 	    catch(Throwable e){
 		      e.printStackTrace();
-          send("That's an error mate.");
           driver.get("https://mbasic.facebook.com/messages/read/?fbid="+page+"&_rdr");
+          send("That's an error mate.");
           try{
             TimeUnit.SECONDS.sleep(1);
           }
