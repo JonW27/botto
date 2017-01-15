@@ -89,7 +89,6 @@ public class Botto{
   }
   public static void welcome(){
     System.out.println("\n                                Welcome to "+ ANSI_CYAN + "botto"+ANSI_RESET+"!\n\nbotto is an"+ANSI_PURPLE+" easy to set up framework"+ANSI_RESET+" that allows you to "+ANSI_YELLOW+"turn your device into an instant IoT device.\n\nbotto supports channels such as discord, fb messenger, and slack,"+ANSI_RESET+" to let "+ANSI_GREEN+"you make your own programmable recipes.\n\nProgram Usage:"+ANSI_PURPLE+"\njava Botto [option]\n\n"+ANSI_GREEN+"Options include:"+ANSI_PURPLE+"\ndiscord\nmessenger\nslack\n"+ANSI_RESET);
-    Model.checkForSettings();
   }
   public static void main(String[] args){
     if(args.length == 0){
@@ -296,6 +295,17 @@ class Discord extends Controller{
   String newUsername;
   String discordChannel = "https://discordapp.com/channels/263162147792617482/263162147792617482";
   public boolean startup(){
+    Model attempt = new Model("discord");
+    if(!attempt.getConfig()){
+      System.out.println("You don't have an mnf.botto file. Please run java Botto to begin setup.");
+      kill();
+      return false;
+    }
+    if(!attempt.channelExists()){
+      System.out.println("You did not set-up credentials for discord in your mnf.botto file.");
+      kill();
+      return false;
+    }
     try{
       driver.get(discordChannel);
       TimeUnit.SECONDS.sleep(2);
@@ -303,8 +313,8 @@ class Discord extends Controller{
       File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
       FileUtils.copyFile(srcFile, new File("screen.png"));
       try{
-        driver.findElement(By.id("register-email")).sendKeys("botto@haxsource.tech"); //email
-        driver.findElement(By.id("register-password")).sendKeys("RlenzPS6"); // password
+        driver.findElement(By.id("register-email")).sendKeys(attempt.getUsername()); //email
+        driver.findElement(By.id("register-password")).sendKeys(attempt.getPassword()); // password
         driver.findElement(By.id("register-password")).submit();
       }
       catch(Exception l){

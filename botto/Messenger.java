@@ -16,6 +16,7 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import java.text.SimpleDateFormat;
+import org.apache.commons.io.FileUtils;
 
 class Messenger extends Controller{
     private WebDriver driver;
@@ -97,11 +98,22 @@ class Messenger extends Controller{
     WebElement message;
     //String markup;
     public boolean startup(){
+      Model attempt = new Model("messenger");
+      if(!attempt.getConfig()){
+        System.out.println("You don't have an mnf.botto file. Please run java Botto to begin setup.");
+        kill();
+        return false;
+      }
+      if(!attempt.channelExists()){
+        System.out.println("You did not set-up credentials for messenger in your mnf.botto file.");
+        kill();
+        return false;
+      }
 	try{
       String messengerChannel = "https://mbasic.facebook.com";
       driver.get(messengerChannel);
-      driver.findElement(By.className("_5ruq")).sendKeys("jonathan@haxsource.com");
-      driver.findElement(By.className("_27z3")).sendKeys("bottodemo1234");
+      driver.findElement(By.className("_5ruq")).sendKeys(attempt.getUsername());
+      driver.findElement(By.className("_27z3")).sendKeys(attempt.getPassword());
       driver.findElement(By.className("_27z3")).submit();
 	    System.out.println("Scaffolding worked! "+ driver.getTitle());
       driver.get("https://mbasic.facebook.com/messages/read/?fbid="+page+"&_rdr");
@@ -116,6 +128,14 @@ class Messenger extends Controller{
 	    oldMessage = getMessageGroup().getText();
 	}
 	catch(Throwable e){
+    File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+    System.out.println(srcFile);
+    try{
+      FileUtils.copyFile(srcFile, new File("screen.png"));
+    }
+    catch(Exception f){
+
+    }
       driver.quit();
 	    e.printStackTrace();
 	}
