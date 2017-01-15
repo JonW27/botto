@@ -1,3 +1,4 @@
+
 import java.util.*;
 import java.io.*;
 //import javax.mail.*;
@@ -19,12 +20,12 @@ import org.openqa.selenium.JavascriptExecutor;
 import java.text.SimpleDateFormat;
 
 class info{
-    public static String os = System.getProperty("os.name");
-    public static String chromePath = "testing/chromedriver.exe";
-    public static String phantomPath = "testing/phantomjs.exe";
-    public static int determine;
-    public static boolean headless = Model.yesNoPrompt("Use phantomjs (headless) to reduce overhead, instead of chrome browser?");
-    public static void info(){
+    static String os = System.getProperty("os.name");
+    static String chromePath = "testing/chromedriver.exe";
+    static String phantomPath = "testing/phantomjs.exe";
+    static int determine;
+    static boolean headless = Model.yesNoPrompt("Use phantomjs (headless) to reduce overhead, instead of chrome browser?");
+    static void info(){
       if(os.equals("Windows")){
         chromePath = "testing/chromedriver.exe";
         phantomPath = "testing/phantomjs.exe";
@@ -38,22 +39,28 @@ class info{
 }
 public class Botto{
     // ANSI COLORS FOR WELCOME
-    public static final String ANSI_RESET = "\u001B[0m";
-    public static final String ANSI_BLACK = "\u001B[30m";
-    public static final String ANSI_RED = "\u001B[31m";
-    public static final String ANSI_GREEN = "\u001B[32m";
-    public static final String ANSI_YELLOW = "\u001B[33m";
-    public static final String ANSI_BLUE = "\u001B[34m";
-    public static final String ANSI_PURPLE = "\u001B[35m";
-    public static final String ANSI_CYAN = "\u001B[36m";
-    public static final String ANSI_WHITE = "\u001B[37m";
+    static final String ANSI_RESET = "\u001B[0m";
+    static final String ANSI_BLACK = "\u001B[30m";
+    static final String ANSI_RED = "\u001B[31m";
+    static final String ANSI_GREEN = "\u001B[32m";
+    static final String ANSI_YELLOW = "\u001B[33m";
+    static final String ANSI_BLUE = "\u001B[34m";
+    static final String ANSI_PURPLE = "\u001B[35m";
+    static final String ANSI_CYAN = "\u001B[36m";
+    static final String ANSI_WHITE = "\u001B[37m";
     //
-    private static int pluginNum = 0;
     private static ArrayList<Controller> Controllers = new ArrayList<Controller>();
     private static ArrayList<WebDriver> Drivers = new ArrayList<WebDriver>();
-    private static Controller lastPlugin = new Controller();
-    private static Controller getController(int index){
+    static Controller getController(int index){
 	return Controllers.get(index);
+    }
+    static WebDriver getDriver(int index){
+	return Drivers.get(index);
+    }
+    static Controller addController(Controller x){
+	Controllers.add(x);
+	Drivers.add(x.driver);
+	return x;
     }
     private static Controller makeController(String tag, int determine){
       WebDriver driver;
@@ -66,23 +73,23 @@ public class Botto{
       driver.manage().window().setSize(new Dimension(1124,850));
       /* working on it
       if(determine == 0){
-	  Controller p = lastPlugin.nextPlugin(driver,"plugin");
+	  Controller p = lastPlugin.nextPlugin(i,driver,"plugin");
 	  Controllers.add(p);
 	  pluginNum++;
 	  return p;
       }
       */
       if(determine == 1){
-        Controller discord = new Discord(driver,"discord");
-      	Controllers.add(discord);
-	Drivers.add(driver);
-      	return discord;
+	  Controller discord = new Discord(getControllersSize(),driver);
+	  Controllers.add(discord);
+	  Drivers.add(driver);
+	  return discord;
       }
       else if(determine == 2){
-        Controller messenger = new Messenger(driver,"messenger", "1856862454602853"); // the last arg is the fbid, which can be found from the url of messenger
-        Controllers.add(messenger);
-	Drivers.add(driver);
-      	return messenger;
+	  Controller messenger = new Messenger(getControllersSize(),driver, "1856862454602853"); // the last arg is the fbid, which can be found from the url of messenger
+	  Controllers.add(messenger);
+	  Drivers.add(driver);
+	  return messenger;
       }
       else{
 	  Controller x = new Controller("default",false);
@@ -94,6 +101,9 @@ public class Botto{
     static int getTickLength(){
 	return tickLength;
     }
+    static int getControllersSize(){
+	return Controllers.size();
+    }
     static int getControllerIndex(String tag){
     	for(int i = 0;i < Controllers.size();i++){
     	    if(getController(i).getTag().equals(tag)){
@@ -102,11 +112,13 @@ public class Botto{
    	}
 	return -1;
     }
-    private static void removeController(int index){
-	Controllers.remove(index);
-	Drivers.remove(index);
+    static void removeController(){
+	Controllers.remove(i);
+	Drivers.remove(i);
+	ii -= 1;
+	i--;
     }
-    public static void welcome(){
+    static void welcome(){
       System.out.println("\n                                Welcome to "+ ANSI_CYAN + "botto"+ANSI_RESET+"!\n\nbotto is an"+ANSI_PURPLE+" easy to set up framework"+ANSI_RESET+" that allows you to "+ANSI_YELLOW+"turn your device into an instant IoT device.\n\nbotto supports channels such as discord, fb messenger, and slack,"+ANSI_RESET+" to let "+ANSI_GREEN+"you make your own programmable recipes.\n\nProgram Usage:"+ANSI_PURPLE+"\njava Controller [option]\n\n"+ANSI_GREEN+"Options include:"+ANSI_PURPLE+"\ndiscord\nmessenger\nslack\n"+ANSI_RESET);
       Model.checkForSettings();
     }
@@ -114,58 +126,110 @@ public class Botto{
 	System.setProperty("webdriver.chrome.driver", info.chromePath);
 	System.setProperty("phantomjs.binary.path", info.phantomPath);
     }
+    private static int i = 0;
+    private static int ii = 0;
+    static int getI(){
+	return i;
+    }
+    static int getIi(){
+	return ii;
+    }
     public static void main(String[] args){
-  if(args.length == 0){
+	if(args.length == 0){
     welcome();
     Model.checkForSettings();
-  }
-  else if(args.length == 1){
-    info.info();
-    setValues();
-    if(args[0].equals("discord")){
-	info.determine = 1;
-    }
-    else if(args[0].equals("messenger")){
-	info.determine = 2;
-    }
-    else if(args.length == 2){
-	info.info();
-	setValues();
-	if(args[0].equals("plugin")){
-	    info.determine = 0;
 	}
-    }
-    makeController(args[0], info.determine).startup();
-    System.out.println("Started up " + args[0]);
-    int i = 0;
-      try{
-    	    while(Controllers.size() > 0){
-    		for(i = 0;i < Controllers.size();i++){
-    		    if(getController(i).getState().equals("dead")){
-    			removeController(i);
-    			i--;
-    		    }
-    		    else{
-    			getController(i).tick();
-    		    }
-    		}
-    		TimeUnit.SECONDS.sleep(tickLength);
-    	    }
-    	}
-    	catch(Throwable e){
-	    removeController(i);
-    	    e.printStackTrace();
-    	}
-  }
-
+	else if(args.length == 1){
+	    info.info();
+	    setValues();
+	    if(args[0].equals("discord")){
+	info.determine = 1;
+	    }
+	    else if(args[0].equals("messenger")){
+		info.determine = 2;
+	    }
+	}
+	else if(args.length == 2){
+	    info.info();
+	    setValues();
+	    if(args[0].equals("plugin")){
+		info.determine = 0;
+	    }
+	}
+	if(args.length > 0){
+	    makeController(args[0], info.determine).startup();
+	    System.out.println("Started up " + args[0]);
+	    while(Controllers.size() > 0){
+		ii = 0;
+		for(i = 0;i < Controllers.size();i++){
+		    try{
+			if(getController(i).getState().equals("dead")){
+			    removeController();
+			}
+			else{
+			    if(!(getController(i).getState().equals("off"))){
+				getController(i).correctIndex();
+				getController(i).tick();
+			    }
+			}
+		    }
+		    catch(Throwable e){
+			try{
+			    int backup = getController(i).getParentIndex();
+			    if(backup != -1){
+				getController(backup).setState("on");
+			    }
+			}
+			catch(Throwable f){
+			    System.out.println("STAP OVERWRITING MY METHODS!!!");
+			}
+			removeController();
+			e.printStackTrace();
+		    }
+		    try{
+			TimeUnit.SECONDS.sleep(tickLength);
+		    }
+		    catch(Throwable e){
+			e.printStackTrace();
+		    }
+		}
+	    }   
+	}
     }
 }
 class Controller{
+    //don't use this class, its only meant to be extended
     private String state;
     private String tag;
-    Controller(String tag){
+    private int index_;
+    private int parentIndex_ = -1;
+    WebDriver driver;
+    int getIndex(){
+	return index_;
+    }
+    int getParentIndex(){
+	return parentIndex_;
+    }
+    void correctIndex(){
+	index_ += Botto.getIi();
+    }
+    void send(String str){
+      driver.findElement(By.tagName("textarea")).sendKeys(str);
+      driver.findElement(By.tagName("textarea")).sendKeys(Keys.RETURN);
+    }
+    Controller(int index,int parentIndex,String tag,WebDriver driver){
+	index_ = index;
+	parentIndex_ = parentIndex;
+	this.driver = driver;
 	state = "on";
 	this.tag = tag;
+	
+    }
+    Controller(int index,String tag,WebDriver driver){
+	state = "on";
+	this.tag = tag;
+	index_ = index;
+	this.driver = driver;
     }
     Controller(String tag,Boolean death){
 	if(death == false){
@@ -173,18 +237,13 @@ class Controller{
 	    this.tag = tag;
 	}
     }
-    Controller(WebDriver driver, String tag){
-	state = "on";
-	this.tag = tag;
-	System.out.println("not meant to be used with a WebDriver");
-    }
-    public String getTag(){
+    String getTag(){
 	return tag;
     }
     void kill(){
 	state = "dead";
     }
-    public String getState(){
+    String getState(){
 	return state;
     }
     void setState(String x){
@@ -196,24 +255,64 @@ class Controller{
     int pause = 0;
     int maxCounter = 300;
     int counter = 300;
-    public boolean startup(){
+    void makeErrorReport(Exception e){
+	StringWriter errors = new StringWriter();
+	e.printStackTrace(new PrintWriter(errors));
+	try{
+	    send("plugin crashed");
+	    send(errors.toString());
+	}
+	catch(Exception f){
+	    System.out.println("plugin crashed");
+	    f.printStackTrace();
+	}
+	try{
+	    FileWriter a = new FileWriter("crash-report.log",true);
+	    BufferedWriter b = new BufferedWriter(a);
+	    PrintWriter writer = new PrintWriter(b);
+	    Calendar calendar = Calendar.getInstance();
+	    SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+	    writer.println(format.format(calendar.getTime()) + "\n");
+	    writer.println(errors.toString() + "\n");
+	    writer.println("-------------------\n");
+	}
+	catch (IOException g){
+	    System.out.println("all hope is lost, all try blocks have failed");
+	    g.printStackTrace();
+	}
+    }
+    void runPluginDash(){
+	try{
+	    //just a format
+	}
+	catch(Exception e){
+	    makeErrorReport(e);
+	}
+    }
+    void runPlugin(){
+	try{
+	    //just a format
+	}
+	catch(Exception e){
+	    makeErrorReport(e);
+	}
+    }
+    boolean startup(){
 	System.out.println("this class is not meant to be started up");
 	return false;
     }
-    public boolean tick(){
+    boolean tick(){
 	return false;
     }
     Controller nextPlugin(WebDriver driver){
-	Controller plugin = new Plugin0(driver);
+	Controller plugin = new Plugin0(Botto.getControllersSize(),driver);
 	return plugin;
     }
 }
 
 class Discord extends Controller{
-    private WebDriver driver;
-    public Discord(WebDriver driver, String tag){
-	super(tag);
-	this.driver = driver;
+    Discord(int index, WebDriver driver){
+	super(index,"discord",driver);
   driver.manage().window().setSize(new Dimension(1124,850));
     }
     void kill(){
@@ -221,7 +320,7 @@ class Discord extends Controller{
 	driver.quit();
     }
     private ArrayList<String> command;
-    private void updateSleepCounter(boolean x){
+    void updateSleepCounter(boolean x){
 	if(x){
 	    counter = maxCounter;
 	}
@@ -240,7 +339,7 @@ class Discord extends Controller{
 	    }
 	}
     }
-    private void getCommand(String markup){
+    void getCommand(String markup){
 	command = new ArrayList<String>();
 	markup += " ";
 	int i = 0;
@@ -263,27 +362,27 @@ class Discord extends Controller{
 	    i++;
 	}
     }
-    private boolean commandCheck(String head,boolean unlimitedInputs,
+    boolean commandCheck(String head,boolean unlimitedInputs,
 				       int minInputs,int maxInputs){
 	return command.get(0).equals(head) && command.size() - 1 >= minInputs &&
 	    (unlimitedInputs || command.size() - 1 <= maxInputs);
     }
-    private WebElement getMessageGroup(){
+    WebElement getMessageGroup(){
     List<WebElement> messages = driver.findElements(By.className("message-group"));
     int size = messages.size();
     return messages.get(size - 1);
   }
-    private String profilePicCheck(WebElement message, String x){
+    String profilePicCheck(WebElement message, String x){
      String url = message.findElement(By.className("avatar-" + x)).getAttribute("style");
      return url.substring(url.indexOf('"') + 1 ,url.lastIndexOf('"'));
     }
-    private String profilePicCheck(WebElement message){
+    String profilePicCheck(WebElement message){
 	return profilePicCheck(message,"large");
     }
-    private List<WebElement> getMarkups(WebElement message){
+    List<WebElement> getMarkups(WebElement message){
         return message.findElements(By.className("markup"));
     }
-    private String getDiscriminator(WebDriver driver,WebElement message,String x){
+    String getDiscriminator(WebDriver driver,WebElement message,String x){
 	WebElement avatar = message.findElement(By.className("avatar-" + x));
 	avatar.click();
 	String discriminator = driver.findElement(By.className("user-popout"))
@@ -292,21 +391,21 @@ class Discord extends Controller{
 	avatar.click();
 	return discriminator;
     }
-    private String getDiscriminator(WebDriver driver,WebElement message){
+    String getDiscriminator(WebDriver driver,WebElement message){
 	return getDiscriminator(driver,message,"large");
     }
-    private String getMarkup(WebElement message){
+    String getMarkup(WebElement message){
 	int size = getMarkups(message).size();
 	return getMarkups(message).get(size - 1).getText();
     }
     //getUsername is not a valid way of identification
-    private String getUsername(WebElement messageGroup){
+    String getUsername(WebElement messageGroup){
 	return messageGroup.findElement(By.className("user-name")).getText();
     }
-    private String getTimeStamp(WebElement messageGroup){
+    String getTimeStamp(WebElement messageGroup){
 	return messageGroup.findElement(By.className("timestamp")).getText();
     }
-    private void send(String str){
+    void send(String str){
       driver.findElement(By.tagName("textarea")).sendKeys(str);
       driver.findElement(By.tagName("textarea")).sendKeys(Keys.RETURN);
     }
@@ -320,7 +419,7 @@ class Discord extends Controller{
     String markup;
     String oldUsername;
     String newUsername;
-    public boolean startup(){
+    boolean startup(){
 	try{
 	    driver.get("https://discordapp.com/channels/263162147792617482/263162147792617482");
       TimeUnit.SECONDS.sleep(2);
@@ -369,48 +468,6 @@ class Discord extends Controller{
 	}
 	return true;
     }
-    void makeErrorReport(Exception e){
-	StringWriter errors = new StringWriter();
-	e.printStackTrace(new PrintWriter(errors));
-	try{
-	    send("plugin crashed");
-	    send(errors.toString());
-	}
-	catch(Exception f){
-	    System.out.println("plugin crashed");
-	    f.printStackTrace();
-	}
-	try{
-	    FileWriter a = new FileWriter("crash-report.log",true);
-	    BufferedWriter b = new BufferedWriter(a);
-	    PrintWriter writer = new PrintWriter(b);
-	    Calendar calendar = Calendar.getInstance();
-	    SimpleDateFormat format = new SimpleDateFormat("HH:mm");
-	    writer.println(format.format(calendar.getTime()) + "\n");
-	    writer.println(errors.toString() + "\n");
-	    writer.println("-------------------\n");
-	}
-	catch (IOException g){
-	    System.out.println("all hope is lost, all try blocks have failed");
-	    g.printStackTrace();
-	}
-    }
-    void runPluginDash(){
-	try{
-	    //just a format
-	}
-	catch(Exception e){
-	    makeErrorReport(e);
-	}
-    }
-    void runPlugin(){
-	try{
-	    //just a format
-	}
-	catch(Exception e){
-	    makeErrorReport(e);
-	}
-    }
     boolean tick(){
 	if(pause <= 0 && getState().equals("on")){
 	    pause = sleepTime;
@@ -440,6 +497,29 @@ class Discord extends Controller{
 			    }
 			    else if(commandCheck("-getDiscriminator",false,0,0)){
 				send(getDiscriminator(driver,message));
+			    }
+			    else if(commandCheck("-term",false,1,20)){
+				System.out.println("terminal command launched");
+				String output = "";
+				try{
+				    String command = newMessage.substring(5);
+				    
+				    Process proc = Runtime.getRuntime().exec(command);
+				    
+				    // Read the output
+				    
+				    BufferedReader reader =
+					new BufferedReader(new InputStreamReader(proc.getInputStream()));
+				    String line = "";
+				    while((line = reader.readLine()) != null) {
+					output = output + line + "\n";
+				    }
+				    proc.waitFor();
+				}
+				catch(Throwable e){
+				    e.printStackTrace();
+				}
+				send(output);
 			    }
 			    else if(commandCheck("-break",false,0,0)){
 			        send("exiting loop");
@@ -477,10 +557,8 @@ class Discord extends Controller{
 			oldMessage = newMessage;
 			oldUsername = newUsername;
 		    }
-		}
 		updateSleepCounter(false);
-	    }
-	    //System.out.println(driver.getPageSource());
+	    } //System.out.println(driver.getPageSource());
 	    catch(StringIndexOutOfBoundsException e){
 		send("nice picture");
 	    }
@@ -494,3 +572,4 @@ class Discord extends Controller{
 	return true;
     }
 }
+

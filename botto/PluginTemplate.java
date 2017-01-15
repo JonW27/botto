@@ -1,12 +1,13 @@
 
 import org.openqa.selenium.WebDriver;
-class Plugin1 extends Controller{//can also extend discord and messenger
+class PluginTemplate extends Controller{//can also extend discord and messenger
     //maybe able to extend other plugins
-    Plugin1(int index,WebDriver driver){
-	super(index,"PluginNameGoesHere",driver);
+    //When making methods, you might want to add a _ at the start of the name to avoid overridding certain methods.
+    PluginTemplate(int Index,WebDriver driver){
+	super(Index,"PluginNameGoesHere",driver);
     }
-    Plugin1(int index,int parentIndex_, WebDriver driver){
-	super(index,parentIndex_,"PluginNameGoesHere",driver);
+    PluginTemplate(int Index, int parentIndex_, WebDriver driver){
+	super(Index,parentIndex_,"PluginNameGoesHere",driver);
     }
     boolean startup(){
 	//insert startup code here
@@ -38,9 +39,8 @@ class Plugin1 extends Controller{//can also extend discord and messenger
 	    makeErrorReport(e);
 	}
     }
-    /*
     Controller nextPlugin(int index,WebDriver driver){
-	Controller plugin = new Plugin2(index,driver);
+	Controller plugin = new PluginSomeNumber(index,driver);
 	return plugin;
     }
     //only used for extension type plugins
@@ -48,5 +48,4 @@ class Plugin1 extends Controller{//can also extend discord and messenger
 	Controller plugin = new Plugin1(index,parentIndex,driver);
 	return plugin;
     }
-    */
 }

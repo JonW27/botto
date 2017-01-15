@@ -1,14 +1,12 @@
+
 import org.openqa.selenium.WebDriver;
 class Plugin0 extends Controller{//can also extend discord and messenger
     //maybe able to extend other plugins
-    private WebDriver driver;
-    Plugin0(WebDriver driver,String tag){
-	super(tag);
-	this.driver = driver;
+    Plugin0(int index,WebDriver driver){
+	super(index,"PluginNameGoesHere",driver);
     }
-    Plugin0(WebDriver driver){
-	super("PluginNameGoesHere");
-	this.driver = driver;
+    Plugin0(int index,int parentIndex_, WebDriver driver){
+	super(index,parentIndex_,"PluginNameGoesHere",driver);
     }
     boolean startup(){
 	//insert startup code here
@@ -40,8 +38,13 @@ class Plugin0 extends Controller{//can also extend discord and messenger
 	    makeErrorReport(e);
 	}
     }
-    Controller nextPlugin(WebDriver driver){
-	Controller plugin = new Plugin1(driver);
+    Controller nextPlugin(int index,WebDriver driver){
+	Controller plugin = new Plugin1(index,driver);
+	return plugin;
+    }
+    //only used for extension type plugins
+    Controller nextPlugin(int index,int parentIndex,WebDriver driver){
+	Controller plugin = new Plugin1(index,parentIndex,driver);
 	return plugin;
     }
 }

@@ -1,3 +1,4 @@
+
 import java.util.*;
 import java.io.*;
 //import javax.mail.*;
@@ -18,19 +19,17 @@ import org.openqa.selenium.JavascriptExecutor;
 import java.text.SimpleDateFormat;
 
 class Messenger extends Controller{
-    private WebDriver driver;
     private String page = ""; // FB page for communication
-    public Messenger(WebDriver driver, String tag, String page){
-    	super(tag);
-    	this.driver = driver;
-      this.page = page;
+    Messenger(int index,WebDriver driver,String page){
+    	super(index,"messenger",driver);
+	this.page = page;
     }
     void kill(){
     	setState("dead");
     	driver.quit();
     }
     private ArrayList<String> command;
-    private void updateSleepCounter(boolean x){
+    void updateSleepCounter(boolean x){
 	if(x){
 	    counter = maxCounter;
 	}
@@ -49,7 +48,7 @@ class Messenger extends Controller{
 	    }
 	}
     }
-    private void getCommand(String markup){
+    void getCommand(String markup){
 	command = new ArrayList<String>();
 	markup += " ";
 	int i = 0;
@@ -72,17 +71,17 @@ class Messenger extends Controller{
 	    i++;
 	}
     }
-    private boolean commandCheck(String head,boolean unlimitedInputs,
+    boolean commandCheck(String head,boolean unlimitedInputs,
 				       int minInputs,int maxInputs){
 	return command.get(0).equals(head) && command.size() - 1 >= minInputs &&
 	    (unlimitedInputs || command.size() - 1 <= maxInputs);
     }
-    private WebElement getMessageGroup(){
+    WebElement getMessageGroup(){
     List<WebElement> messages = driver.findElements(By.xpath("//div[contains(@class, 'msg')]/div/span"));
     int size = messages.size();
     return messages.get(size - 1);
   }
-    private String getDiscriminator(WebDriver driver,WebElement message,String x){
+    String getDiscriminator(WebDriver driver,WebElement message,String x){
 	WebElement avatar = message.findElement(By.className("avatar-" + x));
 	avatar.click();
 	String discriminator = driver.findElement(By.className("user-popout"))
@@ -91,19 +90,19 @@ class Messenger extends Controller{
 	avatar.click();
 	return discriminator;
     }
-    private String getDiscriminator(WebDriver driver,WebElement message){
+    String getDiscriminator(WebDriver driver,WebElement message){
 	return getDiscriminator(driver,message,"large");
     }
     //getUsername is not a valid way of identification
-    private String getUsername(WebElement messageGroup){
+    String getUsername(WebElement messageGroup){
 	return messageGroup.findElement(By.className("user-name")).getText();
     }
-    private String getTimeStamp(WebElement messageGroup){
+    String getTimeStamp(WebElement messageGroup){
       Calendar calendar = Calendar.getInstance();
       SimpleDateFormat format = new SimpleDateFormat("HH:mm");
 	    return format.format(calendar.getTime());
     }
-    private void send(String str){
+    void send(String str){
       driver.findElement(By.tagName("textarea")).sendKeys(str);
       driver.findElement(By.tagName("textarea")).submit();
     }
@@ -115,7 +114,7 @@ class Messenger extends Controller{
     String newMessage;
     WebElement message;
     //String markup;
-    public boolean startup(){
+    boolean startup(){
 	try{
       String messengerChannel = "https://mbasic.facebook.com";
       driver.get(messengerChannel);
@@ -140,7 +139,7 @@ class Messenger extends Controller{
 	}
 	return true;
     }
-    public boolean tick(){
+    boolean tick(){
 	if(pause <= 0 && getState().equals("on")){
 	    pause = sleepTime;
       driver.navigate().refresh();
