@@ -2,7 +2,7 @@
 ![Progress Status](https://img.shields.io/badge/Progress-in--dev-brightgreen.svg)
 [![License](https://img.shields.io/packagist/l/doctrine/orm.svg)](LICENSE.md)
 
-![botto logo](botto/botto.svg)
+![botto logo](https://cdn.rawgit.com/Edmond120/finalProject/jonathan/botto/botto.svg)
 ## Preamble
 🤖botto🤖 is an easy-to-setup framework that allows you to communicate with various devices (think IoT!) through channels like discord, fb messenger, and slack. It attempts to leave a minimal footprint in terms of core functionality, and has been developed with the power user in mind. botto can:
 - get greetings
