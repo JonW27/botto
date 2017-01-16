@@ -2,8 +2,8 @@
 import java.io.*;
 import java.util.*;
 import static java.lang.System.out;
-public class Model{
-  public static boolean yesNoPrompt(String prompt){
+class Model{
+  static boolean yesNoPrompt(String prompt){
     Scanner reader = new Scanner(System.in);
     System.out.println(prompt+" (y/n)");
     String result = reader.nextLine();
@@ -18,7 +18,7 @@ public class Model{
       return yesNoPrompt(prompt);
     }
   }
-  public static void addWhichOne(Boolean discord, Boolean messenger, Boolean slack, PrintWriter writer){
+  static void addWhichOne(Boolean discord, Boolean messenger, Boolean slack, PrintWriter writer){
     Scanner reader = new Scanner(System.in);
     out.println("Which credentials would you like to add? "+" (discord/messenger/slack)");
     String result = reader.nextLine();
@@ -52,9 +52,40 @@ public class Model{
     if(yesNoPrompt("Would you like to repeat for a different channel?")){
       addWhichOne(discord, messenger, slack, writer);
     }
-
   }
-  public static void checkForSettings(){
+    static String userInput(){
+	Scanner reader = new Scanner(System.in);
+	String result = reader.nextLine();
+	return result;
+    }
+    static boolean writeToFile(String input,String fileName){
+	Scanner reader = new Scanner(System.in);
+	PrintWriter writer;
+	try{
+	    writer = new PrintWriter(fileName, "UTF-8");
+	}catch(IOException q){
+	    q.printStackTrace();
+	    return false;
+	}
+	writer.println(reader.nextLine());
+	return true;
+    }
+    static String readFromFile(String fileName){
+	File x = new File(fileName);
+	try{
+	Scanner y = new Scanner(x);
+	}
+	catch(FileNotFoundException f){
+	    f.printStackTrace();
+	    return "failed";
+	}
+	String line = "";
+	while(y.hasNext()){
+	    line += y.next();
+	}
+	return line;
+    }
+  static void checkForSettings(){
     File metadata = new File("mnf.botto");
     if(!metadata.exists()){
       out.println("A mnf.botto file was not detected... is this your first time setting up botto?");

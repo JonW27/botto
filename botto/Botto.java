@@ -469,107 +469,127 @@ class Discord extends Controller{
 	return true;
     }
     boolean tick(){
-	if(pause <= 0 && getState().equals("on")){
-	    pause = sleepTime;
-	    try{
-		message = getMessageGroup();
-		markup = getMarkup(message);
-		newMessage = message.getText();
-		newUsername = getUsername(message);
-		if(!(oldMessage.equals(newMessage) && oldUsername.equals(newUsername))){
-		    if(!(getUsername(message).equals(username) &&
-			 profilePicCheck(message).equals(profilePic))){
-			getCommand(markup);
-			if(command.size() == 0){
-			    command.add("null");
-			}
-			//System.out.println(command);
-			if(markup.charAt(0) == '-'){
-			    if(commandCheck("-time",false,0,0)){
-				send(getTimeStamp(message));
-			    }
-			    else if(commandCheck("-profilePicCheck",false,0,0)){
-				send("I am");
-				send(username);
-				send(profilePic);
-				send("message from");
-				send(profilePicCheck(message));
-			    }
-			    else if(commandCheck("-getDiscriminator",false,0,0)){
-				send(getDiscriminator(driver,message));
-			    }
-			    else if(commandCheck("-term",false,1,20)){
-				System.out.println("terminal command launched");
-				String output = "";
-				try{
-				    String command = newMessage.substring(5);
-				    
-				    Process proc = Runtime.getRuntime().exec(command);
-				    
-				    // Read the output
-				    
-				    BufferedReader reader =
-					new BufferedReader(new InputStreamReader(proc.getInputStream()));
-				    String line = "";
-				    while((line = reader.readLine()) != null) {
-					output = output + line + "\n";
+	if(!(getState().equals("off"))){
+	    if(pause <= 0){
+		pause = sleepTime;
+		try{
+		    message = getMessageGroup();
+		    markup = getMarkup(message);
+		    newMessage = message.getText();
+		    newUsername = getUsername(message);
+		    if(!(oldMessage.equals(newMessage) && oldUsername.equals(newUsername))){
+			if(!(getUsername(message).equals(username) &&
+			     profilePicCheck(message).equals(profilePic))){
+			    if(getState().equals("on")){
+				    getCommand(markup);
+				    if(command.size() == 0){
+					command.add("null");
 				    }
-				    proc.waitFor();
-				}
-				catch(Throwable e){
-				    e.printStackTrace();
-				}
-				send(output);
-			    }
-			    else if(commandCheck("-break",false,0,0)){
-			        send("exiting loop");
-				TimeUnit.SECONDS.sleep(1);
-				kill();
-			    }
-			    else{
-				runPluginDash();
-			    }
-			    updateSleepCounter(true);
-			}
-			else{
-			    if(commandCheck("hi",false,0,1)){
-				if(command.size() == 2){
-				    if (command.get(1).equals(username)){
-					send("hello, that's me");
+				    //System.out.println(command)
+				    if(markup.charAt(0) == '-'){
+					if(commandCheck("-time",false,0,0)){
+					    send(getTimeStamp(message));
+					}
+					else if(commandCheck("-profilePicCheck",false,0,0)){
+					    send("I am");
+					    send(username);
+					    send(profilePic);
+					    send("message from");
+					    send(profilePicCheck(message));
+					}
+					else if(commandCheck("-getDiscriminator",false,0,0)){
+					    send(getDiscriminator(driver,message));
+					}
+					else if(commandCheck("-term",false,1,20)){
+					    System.out.println("terminal command launched");
+					    String output = "";
+					    try{
+						String command = newMessage.substring(5);
+						
+						Process proc = Runtime.getRuntime().exec(command);
+						
+						// Read the output
+						
+						BufferedReader reader =
+						    new BufferedReader(new InputStreamReader(proc.getInputStream()));
+						String line = "";
+						while((line = reader.readLine()) != null) {
+						    output = output + line + "\n";
+						}
+						proc.waitFor();
+					    }
+					    catch(Throwable e){
+						e.printStackTrace();
+					    }
+					    send(output);
+					}
+					else if(commandCheck("-break",false,0,0)){
+					    send("exiting loop");
+					    TimeUnit.SECONDS.sleep(1);
+					    kill();
+					}
+					else if(commandCheck("-extensionPlugin",false,0,0)){
+					    send("setting state to extensionPlugin");
+					    setState("AcceptExtensionPlugin");
+					}
+					else{
+					    runPluginDash();
+					}
+					updateSleepCounter(true);
+				    }
+				    else{
+					if(commandCheck("hi",false,0,1)){
+					    if(command.size() == 2){
+						if (command.get(1).equals(username)){
+						    send("hello, that's me");
+						}
+					    }
+					    else{
+						send("hello " + getUsername(message));
+					    }
+					}
+					else if(commandCheck("say",false,1,1)){
+					    send(command.get(1));
+					}
+					else if(commandCheck("break",false,0,0)){
+					    send("the break command has been changed to -break");
+					}
+					else{
+					    runPlugin();
+					}
 				    }
 				}
-				else{
-				    send("hello " + getUsername(message));
+				else if(getState().equals("AcceptExtensionPlugin")){
+				    //add a lot of try blocks here
+				    setState("on");
+				    String PluginName = "Plugin" + PluginManager.getPluginNum() + ".java";
+				    Model.writeToFile(markup,PluginName);
+				    if(PluginManager.extensionTypePlugin(Botto.getControllersSize(),this,PluginName)){
+					send("plugin installed, use at your own risk");
+				    }
+				    else{
+					send("plugin installation failed, go retake comp sci");
+					send(PluginManager.errorMessage);
+				    }
 				}
-			    }
-			    else if(commandCheck("say",false,1,1)){
-				send(command.get(1));
-			    }
-			    else if(commandCheck("break",false,0,0)){
-				send("the break command has been changed to -break");
-			    }
-			    else{
-				runPlugin();
+				updateSleepCounter(true);
 				}
-			    }
-			    updateSleepCounter(true);
+			    oldMessage = newMessage;
+			    oldUsername = newUsername;
 			}
-			oldMessage = newMessage;
-			oldUsername = newUsername;
+			updateSleepCounter(false);
+		    } //System.out.println(driver.getPageSource());
+		    catch(StringIndexOutOfBoundsException e){
+			    send("nice picture");
 		    }
-		updateSleepCounter(false);
-	    } //System.out.println(driver.getPageSource());
-	    catch(StringIndexOutOfBoundsException e){
-		send("nice picture");
+		    catch(Throwable e){
+			e.printStackTrace();
+		    }
 	    }
-	    catch(Throwable e){
-		e.printStackTrace();
-	    }
-	}
-	else{
-	    pause--;
+		else{
+		    pause--;
+		}
 	}
 	return true;
     }
 }
-

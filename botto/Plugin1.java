@@ -38,15 +38,15 @@ class Plugin1 extends Controller{//can also extend discord and messenger
 	    makeErrorReport(e);
 	}
     }
-    /*
+    /*toBeReplaced
     Controller nextPlugin(int index,WebDriver driver){
 	Controller plugin = new Plugin2(index,driver);
 	return plugin;
     }
     //only used for extension type plugins
     Controller nextPlugin(int index,int parentIndex,WebDriver driver){
-	Controller plugin = new Plugin1(index,parentIndex,driver);
+	Controller plugin = new Plugin2(index,parentIndex,driver);
 	return plugin;
     }
-    */
+    toBeReplaced*/
 }

@@ -2,16 +2,39 @@
 import Botto;
 class PluginManager{
     private static int pluginNum = 0;
-    private static Controller lastPlugin = new Controller();
-    private static boolean pluginCheck(){
-	//uses pluginNum and terminal commands
-	//also makes new plugin file
-	return false;//returns true if file successfully compiles and meets requirments
+    static String errorMessage;
+    static int getPluginNum(){
+	return pluginNum;
     }
-    static void extensionTypePlugin(int index,Controller toBeExtended){
-	if(pluginCheck()){
-	    getController(toBeExtended.getParentIndex()).setState("off");
-	    addController(lastPlugin.nextPlugin(index,toBeExtended.getParentIndex(),toBeExtended.driver));
+    private static Controller lastPlugin = new Controller();
+    private static boolean pluginCheck(String extensionFileName){
+	String template = Model.readFromFile("PluginTemplate.java");
+	String newPluginFile = template.replace("PluginTemplate","Plugin" + (pluginNum + 2) + ".java").replace("PluginSomeNumber","Plugin" + (pluginNum + 3));
+	String[] touch = {"touch", "Plugin" + (pluginNum + 2) + ".java"};
+	terminalCommand.go(touch);
+	Model.writeToFile(newPluginFile,"Plugin" + (pluginNum + 2) + ".java");
+	String next = Model.readFromFile("Plugin" + (pluginNum + 1) + ".java");
+	Model.writeToFile(next.replace("/*toBeReplaced","").replace("toBeReplaced*/",""),"Plugin" + (pluginNum + 1) + ".java");
+	String[] command = {"javac",extensionFileName};
+	String result = terminalCommand.go(command);
+	if(result.equals("null")){
+	    return true;
+	}
+	else{
+	    errorMessage = result;
+	    return false;//returns true if file successfully compiles and meets requirments
+	}
+    }
+    static boolean extensionTypePlugin(int index,Controller toBeExtended,String extensionFileName){
+	if(pluginCheck(extensionFileName)){
+	    getController(toBeExtended.getIndex()).setState("off");
+	    addController(lastPlugin.nextPlugin(index,toBeExtended.getIndex(),toBeExtended.driver));
+	    lastPlugin = toBeExtended;
+	    pluginNum++;
+	    return true;
+	}
+	else{
+	    return false;
 	}
     }
 }
