@@ -51,6 +51,14 @@ public class Botto{
     //
     private static ArrayList<Controller> Controllers = new ArrayList<Controller>();
     private static ArrayList<WebDriver> Drivers = new ArrayList<WebDriver>();
+    private static void reset(){
+	String[] command = {"cp","PluginState0/Plugin0.java", "Plugin0.java"};
+	String[] command2 = {"cp","PluginState0/Plugin1.java","Plugin1.java"};
+	String[] command3 = {"cp","PluginState0/PluginTemplate.java","PluginTemplate.java"};
+	terminalCommand.go(command);
+	terminalCommand.go(command2);
+	terminalCommand.go(command3);
+    }
     static Controller getController(int index){
 	return Controllers.get(index);
     }
@@ -157,6 +165,7 @@ public class Botto{
 	    }
 	}
 	if(args.length > 0){
+	    reset();
 	    makeController(args[0], info.determine).startup();
 	    System.out.println("Started up " + args[0]);
 	    while(Controllers.size() > 0){
@@ -530,6 +539,8 @@ class Discord extends Controller{
 					}
 					else if(commandCheck("-extensionPlugin",false,0,0)){
 					    send("setting state to extensionPlugin");
+					    send("make sure to name your class PluginTemplate and that the method nextPlugin() returns a controller named PluginSomeNumber");
+					    send("don't edit the toBeReplaced comment and add a _ in the beginning of your names to prevent accidentally overriding stuff");
 					    setState("AcceptExtensionPlugin");
 					}
 					else{
@@ -562,8 +573,11 @@ class Discord extends Controller{
 				else if(getState().equals("AcceptExtensionPlugin")){
 				    //add a lot of try blocks here
 				    setState("on");
-				    String PluginName = "Plugin" + PluginManager.getPluginNum() + ".java";
-				    Model.writeToFile(markup,PluginName);
+				    String PluginName = "Plugin" + PluginManager.getPluginNum();
+				    String PluginNameJava = PluginName + ".java";
+				    String replacedMarkup = markup.replace("PluginTemplate",PluginName).replace("PluginSomeNumber","Plugin" + PluginManager.getPluginNum() + 1)
+					.replace("/*toBeReplaced","").replace("toBeReplaced*/","");
+				    Model.writeToFile(replacedMarkup,PluginNameJava);
 				    if(PluginManager.extensionTypePlugin(Botto.getControllersSize(),this,PluginName)){
 					send("plugin installed, use at your own risk");
 				    }

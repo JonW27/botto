@@ -8,7 +8,7 @@ class PluginManager{
     }
     private static Controller lastPlugin = new Controller();
     private static boolean pluginCheck(String extensionFileName){
-	String template = Model.readFromFile("PluginTemplate.java");
+	String template = Model.readFromFile("PluginState0/PluginTemplate.java");
 	String newPluginFile = template.replace("PluginTemplate","Plugin" + (pluginNum + 2) + ".java").replace("PluginSomeNumber","Plugin" + (pluginNum + 3));
 	String[] touch = {"touch", "Plugin" + (pluginNum + 2) + ".java"};
 	terminalCommand.go(touch);
