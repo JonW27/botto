@@ -59,7 +59,6 @@ class Model{
 	return result;
     }
     static boolean writeToFile(String input,String fileName){
-	Scanner reader = new Scanner(System.in);
 	PrintWriter writer;
 	try{
 	    writer = new PrintWriter(fileName, "UTF-8");
@@ -67,7 +66,7 @@ class Model{
 	    q.printStackTrace();
 	    return false;
 	}
-	writer.println(reader.nextLine());
+	writer.println(input);
 	return true;
     }
     static String readFromFile(String fileName){
