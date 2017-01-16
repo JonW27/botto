@@ -337,7 +337,7 @@ class Discord extends Controller{
 	setState("dead");
 	driver.quit();
     }
-    private ArrayList<String> command;
+    ArrayList<String> command;
     void updateSleepCounter(boolean x){
 	if(x){
 	    counter = maxCounter;

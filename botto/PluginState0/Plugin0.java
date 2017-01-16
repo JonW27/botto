@@ -1,6 +1,6 @@
 
 import org.openqa.selenium.WebDriver;
-class Plugin0 extends Controller{//can also extend discord and messenger
+class Plugin0 extends Controller{//can also extend Discord and Messenger
     //maybe able to extend other plugins
     Plugin0(int index,WebDriver driver){
 	super(index,"PluginNameGoesHere",driver);
@@ -19,7 +19,7 @@ class Plugin0 extends Controller{//can also extend discord and messenger
     void runPluginDash(){
 	try{
 	    /*
-	    if(commandCheck(String commandName,Boolean unlimitedInputs?,int minInputs,int maxInputs){
+	    if(commandCheck(String commandName,Boolean unlimitedInputs?,int minInputs,int maxInputs)){
 	    commandThatsSupposedToRun();
 	    }
 	    else if(commandCheck...........
