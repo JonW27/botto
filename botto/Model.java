@@ -73,17 +73,19 @@ class Model{
     static String readFromFile(String fileName){
 	File x = new File(fileName);
 	try{
-	Scanner y = new Scanner(x);
+	    Scanner y = new Scanner(x);
+	
+	    String line = "";
+	    while(y.hasNext()){
+		line += y.next();
+	    }
+	    return line;
 	}
 	catch(FileNotFoundException f){
 	    f.printStackTrace();
 	    return "failed";
 	}
-	String line = "";
-	while(y.hasNext()){
-	    line += y.next();
-	}
-	return line;
+	
     }
   static void checkForSettings(){
     File metadata = new File("mnf.botto");

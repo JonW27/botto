@@ -55,9 +55,14 @@ public class Botto{
 	String[] command = {"cp","PluginState0/Plugin0.java", "Plugin0.java"};
 	String[] command2 = {"cp","PluginState0/Plugin1.java","Plugin1.java"};
 	String[] command3 = {"cp","PluginState0/PluginTemplate.java","PluginTemplate.java"};
-	terminalCommand.go(command);
-	terminalCommand.go(command2);
-	terminalCommand.go(command3);
+	try{
+	    terminalCommand.go(command);
+	    terminalCommand.go(command2);
+	    terminalCommand.go(command3);
+	}
+	catch(Throwable e){
+	    e.printStackTrace();
+	}
     }
     static Controller getController(int index){
 	return Controllers.get(index);
@@ -226,6 +231,10 @@ class Controller{
       driver.findElement(By.tagName("textarea")).sendKeys(str);
       driver.findElement(By.tagName("textarea")).sendKeys(Keys.RETURN);
     }
+    Controller(){
+	state = "off";
+	tag = "firstPlugin";
+    }
     Controller(int index,int parentIndex,String tag,WebDriver driver){
 	index_ = index;
 	parentIndex_ = parentIndex;
@@ -313,8 +322,8 @@ class Controller{
     boolean tick(){
 	return false;
     }
-    Controller nextPlugin(WebDriver driver){
-	Controller plugin = new Plugin0(Botto.getControllersSize(),driver);
+    Controller nextPlugin(int index,int parentIndex,WebDriver driver){
+	Controller plugin = new Plugin0(index,parentIndex,driver);
 	return plugin;
     }
 }
