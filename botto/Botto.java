@@ -586,13 +586,39 @@ class Discord extends Controller{
 				    String PluginNameJava = PluginName + ".java";
 				    String replacedMarkup = markup.replace("PluginTemplate",PluginName).replace("PluginSomeNumber","Plugin" + PluginManager.getPluginNum() + 1)
 					.replace("/*toBeReplaced","").replace("toBeReplaced*/","");
+				    //backup
+				    String cp[] = {"cp",PluginNameJava,"pluginBackup.java"};
+				    boolean backupFailed = false;
+				    try{
+					terminalCommand.go(cp);
+				    }
+				    catch(Throwable e){
+					e.printStackTrace();
+					backupFailed = true;
+					send("backup Failed");
+				    }
 				    Model.writeToFile(replacedMarkup,PluginNameJava);
-				    if(PluginManager.extensionTypePlugin(Botto.getControllersSize(),this,PluginName)){
+				    if(PluginManager.extensionTypePlugin(Botto.getControllersSize(),this,PluginNameJava)){
 					send("plugin installed, use at your own risk");
 				    }
 				    else{
 					send("plugin installation failed, go retake comp sci");
 					send(PluginManager.errorMessage);
+					if(!backupFailed){
+					    cp[1] = "pluginBackup.java";
+					    cp[2] = PluginNameJava;
+					    try{
+						terminalCommand.go(cp);
+						send("but I backed up your files so everything's ok");
+					    }
+					    catch(Throwable f){
+						f.printStackTrace();
+						send("backup failed gg");
+					    }
+					}
+					else{
+					    send("no backup gg");
+					}
 				    }
 				}
 				updateSleepCounter(true);
