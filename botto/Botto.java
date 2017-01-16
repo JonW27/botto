@@ -333,6 +333,10 @@ class Discord extends Controller{
 	super(index,"discord",driver);
   driver.manage().window().setSize(new Dimension(1124,850));
     }
+    Discord(int index,int parentIndex,String tag,WebDriver driver){
+	super(index,parentIndex,tag,driver);
+	driver.manage().window().setSize(new Dimension(1124,850));
+    }
     void kill(){
 	setState("dead");
 	driver.quit();
@@ -578,9 +582,8 @@ class Discord extends Controller{
 					    runPlugin();
 					}
 				    }
-				}
+			    }
 				else if(getState().equals("AcceptExtensionPlugin")){
-				    //add a lot of try blocks here
 				    setState("on");
 				    String PluginName = "Plugin" + PluginManager.getPluginNum();
 				    String PluginNameJava = PluginName + ".java";
