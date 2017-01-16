@@ -11,10 +11,15 @@ class PluginTemplate extends Controller{//can also extend discord and messenger
     }
     boolean startup(){
 	//insert startup code here
+	//startup code dosen't run in extensionTypePlugins
+	//a startup code is still needed however since extensionTypePlugins eventually be come permanentTypePlugins
+
+	//return super.startup();
 	return true;
     }
     boolean tick(){
 	//insert tick code here
+	//return super.tick();
 	return true;
     }
     void runPluginDash(){

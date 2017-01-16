@@ -24,16 +24,21 @@ class terminalCommand {
             writeTo.close();
 	    */
 	    String result = "";
-	    if((line = br.readLine()).equals(null)){
-		result += "null";
+	    try{
+		if((line = br.readLine()).equals(null)){
+		    result += "null";
+		}
+		else{
+		    result += line;
+		}
+		while ((line = br.readLine()) != null) {
+		    result += line;
+		}
+		return result;
 	    }
-	    else{
-		result += line;
+	    catch(NullPointerException n){
+		return "null";
 	    }
-	    while ((line = br.readLine()) != null) {
-		result += line;
-	    }
-            return result;
         } catch (IOException e) {
             e.printStackTrace();
 	    return "failed";
