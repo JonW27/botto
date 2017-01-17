@@ -520,6 +520,7 @@ class Discord extends Controller{
       }
       e.printStackTrace();
     }
+    return true;
   }
   boolean tick(){
     if(!(getState().equals("off"))){
