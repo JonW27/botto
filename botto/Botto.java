@@ -611,9 +611,10 @@ class Discord extends Controller{
 		      driver.get(markup);
 		      TimeUnit.SECONDS.sleep(4);
 		  }
-		  catch{
+		  catch(Throwable e){
+		      e.printStackTrace();
 		      driver.get("https://discordapp.com/channels/263162147792617482/263162147792617482");
-		      Time.Unit.SECONDS.sleep(4);
+		      TimeUnit.SECONDS.sleep(4);
 		  }
 	      }
               else if(getState().equals("AcceptExtensionPlugin")){
