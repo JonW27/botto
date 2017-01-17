@@ -1,4 +1,5 @@
-
+import java.awt.Desktop;
+import java.net.URI;
 import java.util.*;
 import java.io.*;
 //import javax.mail.*;
@@ -109,7 +110,7 @@ public class Botto{
     System.out.println("defaulting to Controller, did you spell something wrong?");
     return x;
   }
-}
+  }
 private static int tickLength = 1;
 static int getTickLength(){
   return tickLength;
@@ -165,7 +166,18 @@ public static void main(String[] args){
       reset();
       info.determine = 3;
     }
-  }
+    else if(args[0].equals("about")){
+	try{
+	    if(Desktop.isDesktopSupported()){
+		Desktop.getDesktop().browse(new URI("http://www.example.com"));
+	    }
+	}
+	catch(Throwable e){
+	    System.out.println("go to <insert Link here>");
+	}
+	      
+	info.determine = 3;
+    }
   else if(args.length == 2){
     info.info();
     setValues();
@@ -215,6 +227,7 @@ public static void main(String[] args){
       }
     }
   }
+}
 }
 }
 class Controller{
