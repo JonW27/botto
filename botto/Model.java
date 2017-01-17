@@ -14,7 +14,7 @@ class Model{
     this.channel = channel;
     readMNF();
   }
-  boolean getChannel(){
+  boolean channelExists(){
     return channelExists;
   }
   String getUsername(){
@@ -147,7 +147,7 @@ class Model{
 	File x = new File(fileName);
 	try{
 	    Scanner y = new Scanner(x);
-	    
+
 	    String line = "";
 	    while(y.hasNext()){
 		line += y.next();
@@ -158,7 +158,7 @@ class Model{
 	    f.printStackTrace();
 	    return "failed";
 	}
-	
+
     }
     public static void checkForSettings(){
 	File metadata = new File("mnf.botto");
@@ -174,7 +174,7 @@ class Model{
 		catch(IOException e){
 		    e.printStackTrace();
 		}
-		
+
 	    }
 	}
     }
