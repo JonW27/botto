@@ -234,8 +234,14 @@ class Controller{
 	index_ += Botto.getIi();
     }
     void send(String str){
-      driver.findElement(By.tagName("textarea")).sendKeys(str);
-      driver.findElement(By.tagName("textarea")).sendKeys(Keys.RETURN);
+	if(str.length() > 2000){
+	    driver.findElement(By.tagName("textarea")).sendKeys("over 2000 chars in length");
+	    driver.findElement(By.tagName("textarea")).sendKeys(Keys.RETURN);
+	}
+	else{
+	    driver.findElement(By.tagName("textarea")).sendKeys(str);
+	    driver.findElement(By.tagName("textarea")).sendKeys(Keys.RETURN);
+	}
     }
     Controller(){
 	state = "off";
