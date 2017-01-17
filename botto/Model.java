@@ -59,15 +59,16 @@ class Model{
 	return result;
     }
     static boolean writeToFile(String input,String fileName){
-	PrintWriter writer;
-	try{
-	    writer = new PrintWriter(fileName, "UTF-8");
-	}catch(IOException q){
-	    q.printStackTrace();
-	    return false;
-	}
-	writer.println(input);
-	return true;
+	    PrintWriter writer;
+	    try{
+	      writer = new PrintWriter(fileName, "UTF-8");
+	    }catch(IOException q){
+	      q.printStackTrace();
+	      return false;
+	    }
+	    writer.println(input);
+      writer.close();
+	    return true;
     }
     static String readFromFile(String fileName){
 	File x = new File(fileName);
