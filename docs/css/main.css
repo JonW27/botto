@@ -1,0 +1,24 @@
+body{
+    font-family: 'Anonymous Pro', monospace;
+    background: #2C3E50; /* fallback for old browsers */
+    background: -webkit-linear-gradient(to left, #2C3E50 , #4CA1AF); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to left, #2C3E50 , #4CA1AF); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+.headline{
+    width: 35vw;
+    height: 35vw;
+    padding-top: 15vw;
+}
+h2 {
+    text-align:center;
+}
+button {
+    background: #41295a; /* fallback for old browsers */
+    background: -webkit-linear-gradient(to left, #41295a , #2F0743); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to left, #41295a , #2F0743); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    color: white;
+    border: 0;
+}
+.buttons {
+    padding-left: 5vw;
+}

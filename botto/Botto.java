@@ -26,15 +26,15 @@ class info{
     static int determine;
     static boolean headless = Model.yesNoPrompt("Use phantomjs (headless) to reduce overhead, instead of chrome browser?");
     static void info(){
-      if(os.equals("Windows")){
-        chromePath = "testing/chromedriver.exe";
-        phantomPath = "testing/phantomjs.exe";
-      }
-      else if(os.equals("Mac OS X")){
-        chromePath = "testing/chromedriver";
-        phantomPath = "testing/phantomjs";
-      }
-    System.out.println("Using "+chromePath+" or "+phantomPath);
+	if(os.equals("Windows")){
+	    chromePath = "testing/chromedriver.exe";
+	    phantomPath = "testing/phantomjs.exe";
+	}
+	else if(os.equals("Mac OS X")){
+	    chromePath = "testing/chromedriver";
+	    phantomPath = "testing/phantomjs";
+	}
+	System.out.println("Using "+chromePath+" or "+phantomPath);
     }
 }
 public class Botto{
@@ -364,14 +364,14 @@ class Discord extends Controller{
 	}
 	else{
 	    if(counter == maxCounter){
+        sleepTime = minSleepTime;
+      }
+      if(counter > 0){
+        counter -= 1;
+      }
+      else if(counter == 0){
 
-		sleepTime = minSleepTime;
-	    }
-	    if(counter > 0){
-		counter -= 1;
-	    }
-	    else if(counter == 0){
-
+<<<<<<< HEAD
 		sleepTime = maxSleepTime;
 		counter -= 1;
 	    }
@@ -406,10 +406,6 @@ class Discord extends Controller{
 	    (unlimitedInputs || command.size() - 1 <= maxInputs);
     }
     WebElement getMessageGroup(){
-    List<WebElement> messages = driver.findElements(By.className("message-group"));
-    int size = messages.size();
-    return messages.get(size - 1);
-  }
     String profilePicCheck(WebElement message, String x){
      String url = message.findElement(By.className("avatar-" + x)).getAttribute("style");
      return url.substring(url.indexOf('"') + 1 ,url.lastIndexOf('"'));
@@ -458,49 +454,60 @@ class Discord extends Controller{
     String oldUsername;
     String newUsername;
     String discordChannel = "https://discordapp.com/channels/263162147792617482/263162147792617482";
-    boolean startup(){
+    public boolean startup(){
+	Model attempt = new Model("discord");
+	if(!attempt.getConfig()){
+	    System.out.println("You don't have an mnf.botto file. Please run java Botto to begin setup.");
+	    kill();
+	    return false;
+	}
+	if(!attempt.channelExists()){
+	    System.out.println("You did not set-up credentials for discord in your mnf.botto file.");
+	    kill();
+	    return false;
+	}
 	try{
 	    driver.get(discordChannel);
       TimeUnit.SECONDS.sleep(2);
-	    System.out.println("Scaffolding worked! "+ driver.getTitle());
+      System.out.println("Scaffolding worked! "+ driver.getTitle());
       File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
       FileUtils.copyFile(srcFile, new File("screen.png"));
       try{
-	    driver.findElement(By.id("register-email")).sendKeys("botto@haxsource.tech"); //email
-	    driver.findElement(By.id("register-password")).sendKeys("RlenzPS6"); // password
-	    driver.findElement(By.id("register-password")).submit();
+        driver.findElement(By.id("register-email")).sendKeys(attempt.getUsername()); //email
+        driver.findElement(By.id("register-password")).sendKeys(attempt.getPassword()); // password
+        driver.findElement(By.id("register-password")).submit();
       }
       catch(Exception l){
 
       }
-	    TimeUnit.SECONDS.sleep(5);
+      TimeUnit.SECONDS.sleep(5);
       if(driver.getCurrentUrl().equals(discordChannel) || driver.getCurrentUrl().equals("https://discordapp.com/login")){
         System.out.println("Check your email! Discord detected a new location or IP!");
         kill();
         return false;
       }
-	    if(driver.findElements(By.className("markdown-modal-close")).size() > 0){
-		driver.findElement(By.className("markdown-modal-close")).click();
-	    }
-	    if(driver.findElements(By.xpath("//*[contains(text(), 'Skip')]")).size() > 0){
-		TimeUnit.SECONDS.sleep(1);
-		driver.findElement(By.xpath("//*[contains(text(), 'Skip')]")).click();
-	    }
-	    driver.get("https://discordapp.com/channels/263162147792617482/263162147792617482");
+      if(driver.findElements(By.className("markdown-modal-close")).size() > 0){
+        driver.findElement(By.className("markdown-modal-close")).click();
+      }
+      if(driver.findElements(By.xpath("//*[contains(text(), 'Skip')]")).size() > 0){
+        TimeUnit.SECONDS.sleep(1);
+        driver.findElement(By.xpath("//*[contains(text(), 'Skip')]")).click();
+      }
+      driver.get("https://discordapp.com/channels/263162147792617482/263162147792617482");
       File srcFil = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
       FileUtils.copyFile(srcFil, new File("screen.png"));
-	    //System.out.println(getMessageGroup(driver));
+      //System.out.println(getMessageGroup(driver));
 
 
-	    account = driver.findElement(By.className("account"));
-	    username = account.findElement(By.className("username")).getText();
-	    profilePic = profilePicCheck(account,"small");
-	    discriminator = account.findElement(By.className("discriminator")).getText();
-	    WebElement x = getMessageGroup();
-	    oldMessage = x.getText();
-	    oldUsername = getUsername(x);
-	}
-	catch(Throwable e){
+      account = driver.findElement(By.className("account"));
+      username = account.findElement(By.className("username")).getText();
+      profilePic = profilePicCheck(account,"small");
+      discriminator = account.findElement(By.className("discriminator")).getText();
+      WebElement x = getMessageGroup();
+      oldMessage = x.getText();
+      oldUsername = getUsername(x);
+    }
+    catch(Throwable e){
       File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
       try{
         FileUtils.copyFile(srcFile, new File("screen.png"));
@@ -508,10 +515,7 @@ class Discord extends Controller{
       catch(Exception f){
 
       }
-	    e.printStackTrace();
-	}
-  System.out.println("Started up discord");
-	return true;
+      e.printStackTrace();
     }
     boolean tick(){
 	if(!(getState().equals("off"))){
@@ -654,4 +658,9 @@ class Discord extends Controller{
 	}
 	return true;
     }
+    else{
+      pause--;
+    }
+    return true;
+  }
 }
