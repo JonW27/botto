@@ -539,9 +539,9 @@ class Discord extends Controller{
 					    send(getDiscriminator(driver,message));
 					}
 					else if(commandCheck("-term",false,1,20)){
-					    String[] words = new String[command.size()];
+					    String[] words = new String[command.size() - 1];
 					    for(int i = 1; i < command.size(); i++){
-						words[i] = command.get(i);
+						words[i - 1] = command.get(i);
 					    }
 					    send("terminal command launched");
 					    send(terminalCommand.go(words));
