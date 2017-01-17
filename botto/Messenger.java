@@ -16,6 +16,7 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import java.text.SimpleDateFormat;
+import org.apache.commons.io.FileUtils;
 
 class Messenger extends Controller{
     private WebDriver driver;
@@ -97,11 +98,22 @@ class Messenger extends Controller{
     WebElement message;
     //String markup;
     public boolean startup(){
+      Model attempt = new Model("messenger");
+      if(!attempt.getConfig()){
+        System.out.println("You don't have an mnf.botto file. Please run java Botto to begin setup.");
+        kill();
+        return false;
+      }
+      if(!attempt.channelExists()){
+        System.out.println("You did not set-up credentials for messenger in your mnf.botto file.");
+        kill();
+        return false;
+      }
 	try{
       String messengerChannel = "https://mbasic.facebook.com";
       driver.get(messengerChannel);
-      driver.findElement(By.className("_5ruq")).sendKeys("jonathan@haxsource.com");
-      driver.findElement(By.className("_27z3")).sendKeys("bottodemo1234");
+      driver.findElement(By.className("_5ruq")).sendKeys(attempt.getUsername());
+      driver.findElement(By.className("_27z3")).sendKeys(attempt.getPassword());
       driver.findElement(By.className("_27z3")).submit();
 	    System.out.println("Scaffolding worked! "+ driver.getTitle());
       driver.get("https://mbasic.facebook.com/messages/read/?fbid="+page+"&_rdr");
@@ -116,6 +128,14 @@ class Messenger extends Controller{
 	    oldMessage = getMessageGroup().getText();
 	}
 	catch(Throwable e){
+    File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+    System.out.println(srcFile);
+    try{
+      FileUtils.copyFile(srcFile, new File("screen.png"));
+    }
+    catch(Exception f){
+
+    }
       driver.quit();
 	    e.printStackTrace();
 	}
@@ -166,7 +186,9 @@ class Messenger extends Controller{
           	catch(Throwable e){
           	    e.printStackTrace();
           	}
-            send(output);
+            if(!output.equals("")){
+              send(output);
+            }
           }
 			    else if(commandCheck("-break",false,0,0)){
 			        send("exiting loop");
@@ -193,6 +215,12 @@ class Messenger extends Controller{
             Random picker = new Random();
             send(mrkquotes[picker.nextInt(mrkquotes.length)]);
           }
+          else if(newMessage.equals("quote mr brown")){
+            String mrbrownquotes[] = {"Binary Feedback!","Thumbs!", "Damn right you are!", "Yip Yip Yip, TRIO, TRIO!!!", "Procure a KtS", "Volunteers?", "Do not go onto the Interwebz.", "Daz a nice!", "I can’t keep calling on PChan", "PChan has reached his quota for the period", "Don’t turn on your machines just yet", "Always look at the QAF!!", "Easy tigers!", "You are the next hope of this country.", "JA", "My other period of thinkers....", "Thinkers!", "‘Twas an epic battle, to be sure… You cut ye old monster down, but with its dying breath ye old monster laid a fatal blow upon thy skull.", "Ye olde self hath expired. You got dead.", "Damn right, son!", "Mr. Me", "Get your collectibles", "I smell something in the oven!", "A day of relaxation", "Breathe….", "Song of the week"};
+            Random picker = new Random();
+            send(mrbrownquotes[picker.nextInt(mrbrownquotes.length)]);
+
+          }
 			    updateSleepCounter(true);
 			}
 			oldMessage = newMessage;
@@ -205,8 +233,8 @@ class Messenger extends Controller{
 	    }
 	    catch(Throwable e){
 		      e.printStackTrace();
-          send("That's an error mate.");
           driver.get("https://mbasic.facebook.com/messages/read/?fbid="+page+"&_rdr");
+          send("That's an error mate.");
           try{
             TimeUnit.SECONDS.sleep(1);
           }

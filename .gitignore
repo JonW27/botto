@@ -7,3 +7,5 @@ botto/phantomjsdriver.log
 *.png
 /botto/testMain.java
 /botto/testMain.class
+/botto/testdec.java
+/botto/testdec.class
