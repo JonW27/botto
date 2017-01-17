@@ -1,13 +1,13 @@
 
 import org.openqa.selenium.WebDriver;
-class PluginTemplate extends Controller{//can also extend Discord and Messenger
+class PluginTemplate extends Discord{//can also extend Discord and Messenger
     //maybe able to extend other plugins
     //When making methods, you might want to add a _ at the start of the name to avoid overridding certain methods.
     PluginTemplate(int Index,WebDriver driver){
-	super(Index,"PluginNameGoesHere",driver);
+	super(Index,"shouldWorkPlugin",driver);
     }
     PluginTemplate(int Index, int parentIndex_, WebDriver driver){
-	super(Index,parentIndex_,"PluginNameGoesHere",driver);
+	super(Index,parentIndex_,"shouldWorkPlugin",driver);
     }
     boolean startup(){
 	//insert startup code here
@@ -31,7 +31,10 @@ class PluginTemplate extends Controller{//can also extend Discord and Messenger
 	    else if(commandCheck...........
 	    you get the point
 	    */
-	}
+	    if(commandCheck("passed",false,0,5)){
+            	send("it worked! :D");
+	    }
+        }
 	catch(Exception e){
 	    makeErrorReport(e);
 	}

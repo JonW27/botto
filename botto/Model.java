@@ -1,6 +1,7 @@
 //place data and file reading functions here
 import java.io.*;
 import java.util.*;
+import org.apache.commons.io.FileUtils;
 import static java.lang.System.out;
 class Model{
   static boolean yesNoPrompt(String prompt){
@@ -59,15 +60,13 @@ class Model{
 	return result;
     }
     static boolean writeToFile(String input,String fileName){
-	    PrintWriter writer;
 	    try{
-	      writer = new PrintWriter(fileName, "UTF-8");
+        File f = new File(fileName);
+	      FileUtils.writeStringToFile(f,input,"UTF-8");
 	    }catch(IOException q){
 	      q.printStackTrace();
 	      return false;
 	    }
-	    writer.println(input);
-      writer.close();
 	    return true;
     }
     static String readFromFile(String fileName){
