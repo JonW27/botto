@@ -567,6 +567,11 @@ class Discord extends Controller{
                     TimeUnit.SECONDS.sleep(1);
                     kill();
                   }
+		  else if(commandCheck("-directMessage",false,0,0)){
+		      send("are we even friends?");
+		      send("if we are, link plz");
+		      setState("directMessage");
+		  }
                   else if(commandCheck("-extensionPlugin",false,0,0)){
                     send("setting state to extensionPlugin");
                     send("make sure to name your class PluginTemplate and that the method nextPlugin() returns a controller named PluginSomeNumber");
@@ -600,6 +605,17 @@ class Discord extends Controller{
                   }
                 }
               }
+	      else if(getState().equals("directMessage")){
+		  setState("on");
+		  try{
+		      driver.get(markup);
+		      TimeUnit.SECONDS.sleep(4);
+		  }
+		  catch{
+		      driver.get("https://discordapp.com/channels/263162147792617482/263162147792617482");
+		      Time.Unit.SECONDS.sleep(4);
+		  }
+	      }
               else if(getState().equals("AcceptExtensionPlugin")){
                 setState("on");
                 String PluginName = "Plugin" + PluginManager.getPluginNum();
