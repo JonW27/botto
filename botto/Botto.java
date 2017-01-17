@@ -371,7 +371,6 @@ class Discord extends Controller{
       }
       else if(counter == 0){
 
-<<<<<<< HEAD
 		sleepTime = maxSleepTime;
 		counter -= 1;
 	    }
@@ -406,6 +405,10 @@ class Discord extends Controller{
 	    (unlimitedInputs || command.size() - 1 <= maxInputs);
     }
     WebElement getMessageGroup(){
+    List<WebElement> messages = driver.findElements(By.className("message-group"));
+    int size = messages.size();
+    return messages.get(size - 1);
+  }}
     String profilePicCheck(WebElement message, String x){
      String url = message.findElement(By.className("avatar-" + x)).getAttribute("style");
      return url.substring(url.indexOf('"') + 1 ,url.lastIndexOf('"'));
