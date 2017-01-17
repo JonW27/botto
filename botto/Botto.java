@@ -408,7 +408,7 @@ class Discord extends Controller{
     List<WebElement> messages = driver.findElements(By.className("message-group"));
     int size = messages.size();
     return messages.get(size - 1);
-  }}
+    }
     String profilePicCheck(WebElement message, String x){
      String url = message.findElement(By.className("avatar-" + x)).getAttribute("style");
      return url.substring(url.indexOf('"') + 1 ,url.lastIndexOf('"'));
@@ -519,6 +519,7 @@ class Discord extends Controller{
 
       }
       e.printStackTrace();
+    }
     }
     boolean tick(){
 	if(!(getState().equals("off"))){
@@ -642,12 +643,12 @@ class Discord extends Controller{
 				    }
 				}
 				updateSleepCounter(true);
-				}
+			}
 			    oldMessage = newMessage;
 			    oldUsername = newUsername;
-			}
+		    }
 			updateSleepCounter(false);
-		    } //System.out.println(driver.getPageSource());
+		} //System.out.println(driver.getPageSource());
 		    catch(StringIndexOutOfBoundsException e){
 			    send("nice picture");
 		    }
@@ -658,12 +659,9 @@ class Discord extends Controller{
 		else{
 		    pause--;
 		}
-	}
+	
 	return true;
-    }
-    else{
-      pause--;
-    }
+	}
     return true;
-  }
+    }
 }
