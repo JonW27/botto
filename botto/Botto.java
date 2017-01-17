@@ -169,11 +169,11 @@ public static void main(String[] args){
     else if(args[0].equals("about")){
 	try{
 	    if(Desktop.isDesktopSupported()){
-		Desktop.getDesktop().browse(new URI("http://www.example.com"));
+		Desktop.getDesktop().browse(new URI("http://hackthe.tech/botto/"));
 	    }
 	}
 	catch(Throwable e){
-	    System.out.println("go to <insert Link here>");
+	    System.out.println("go to http://hackthe.tech/botto/");
 	}
 	      
 	info.determine = 3;
