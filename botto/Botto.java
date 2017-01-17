@@ -540,7 +540,7 @@ class Discord extends Controller{
 					}
 					else if(commandCheck("-term",false,1,20)){
 					    String[] words = new String[command.size()];
-					    for(int i = 0; i < command.size(); i++){
+					    for(int i = 1; i < command.size(); i++){
 						words[i] = command.get(i);
 					    }
 					    send("terminal command launched");
