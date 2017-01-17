@@ -523,27 +523,8 @@ class Discord extends Controller{
 					    send(getDiscriminator(driver,message));
 					}
 					else if(commandCheck("-term",false,1,20)){
-					    System.out.println("terminal command launched");
-					    String output = "";
-					    try{
-						String command = newMessage.substring(5);
-						
-						Process proc = Runtime.getRuntime().exec(command);
-						
-						// Read the output
-						
-						BufferedReader reader =
-						    new BufferedReader(new InputStreamReader(proc.getInputStream()));
-						String line = "";
-						while((line = reader.readLine()) != null) {
-						    output = output + line + "\n";
-						}
-						proc.waitFor();
-					    }
-					    catch(Throwable e){
-						e.printStackTrace();
-					    }
-					    send(output);
+					    send("terminal command launched");
+					    send(terminalCommand.go(command));
 					}
 					else if(commandCheck("-break",false,0,0)){
 					    send("exiting loop");
@@ -610,7 +591,9 @@ class Discord extends Controller{
 					if(!backupFailed){
 					    cp[1] = "pluginBackup.java";
 					    cp[2] = PluginNameJava;
+					    String cp2 = {"cp",PluginNameJava,"failedPlugin.java"};
 					    try{
+						terminalCommand.go(cp2);
 						terminalCommand.go(cp);
 						send("but I backed up your files so everything's ok");
 					    }
