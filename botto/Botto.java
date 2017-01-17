@@ -333,6 +333,10 @@ class Discord extends Controller{
 	super(index,"discord",driver);
   driver.manage().window().setSize(new Dimension(1124,850));
     }
+    Discord(int index,String tag,WebDriver driver){
+	super(index,tag,driver);
+	driver.manage().window().setSize(new Dimension(1124,850));
+    }
     Discord(int index,int parentIndex,String tag,WebDriver driver){
 	super(index,parentIndex,tag,driver);
 	driver.manage().window().setSize(new Dimension(1124,850));
@@ -572,7 +576,7 @@ class Discord extends Controller{
 				    setState("on");
 				    String PluginName = "Plugin" + PluginManager.getPluginNum();
 				    String PluginNameJava = PluginName + ".java";
-				    String replacedMarkup = markup.replace("PluginTemplate",PluginName).replace("PluginSomeNumber","Plugin" + PluginManager.getPluginNum() + 1)
+				    String replacedMarkup = markup.replace("PluginTemplate",PluginName).replace("PluginSomeNumber","Plugin" + (PluginManager.getPluginNum() + 1))
 					.replace("/*toBeReplaced","//replaced").replace("toBeReplaced*/","//replaced");
 				    //backup
 				    String cp[] = {"cp",PluginNameJava,"pluginBackup.java"};

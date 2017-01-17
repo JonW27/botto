@@ -6,7 +6,7 @@ class Plugin0 extends Discord{//can also extend discord and messenger
     super(Index,"TestPlugin",driver);
     }
     Plugin0(int Index, int parentIndex, WebDriver driver){
-    super(Index,parentIndex_,"TestPlugin",driver);
+    super(Index,parentIndex,"TestPlugin",driver);
     }
     boolean startup(){
     //insert startup code here
@@ -49,15 +49,13 @@ class Plugin0 extends Discord{//can also extend discord and messenger
         makeErrorReport(e);
     }
     }
-    /toBeReplaced
       Controller nextPlugin(int index,WebDriver driver){
-      Controller plugin = new Plugin01(index,driver);
+      Controller plugin = new Plugin1(index,driver);
       return plugin;
       }
       //only used for extension type plugins
       Controller nextPlugin(int index,int parentIndex,WebDriver driver){
-      Controller plugin = new Plugin01(index,parentIndex,driver);
+      Controller plugin = new Plugin1(index,parentIndex,driver);
       return plugin;
       }
-      toBeReplaced/
 }

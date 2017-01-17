@@ -5,8 +5,8 @@ class Plugin0 extends Controller{//can also extend Discord and Messenger
     Plugin0(int index,WebDriver driver){
 	super(index,"PluginNameGoesHere",driver);
     }
-    Plugin0(int index,int parentIndex_, WebDriver driver){
-	super(index,parentIndex_,"PluginNameGoesHere",driver);
+    Plugin0(int index,int parentIndex, WebDriver driver){
+	super(index,parentIndex,"PluginNameGoesHere",driver);
     }
     boolean startup(){
 	//insert startup code here

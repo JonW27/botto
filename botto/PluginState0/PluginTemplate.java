@@ -6,8 +6,8 @@ class PluginTemplate extends Controller{//can also extend Discord and Messenger
     PluginTemplate(int Index,WebDriver driver){
 	super(Index,"PluginNameGoesHere",driver);
     }
-    PluginTemplate(int Index, int parentIndex_, WebDriver driver){
-	super(Index,parentIndex_,"PluginNameGoesHere",driver);
+    PluginTemplate(int Index, int parentIndex, WebDriver driver){
+	super(Index,parentIndex,"PluginNameGoesHere",driver);
     }
     boolean startup(){
 	//insert startup code here
