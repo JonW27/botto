@@ -523,8 +523,12 @@ class Discord extends Controller{
 					    send(getDiscriminator(driver,message));
 					}
 					else if(commandCheck("-term",false,1,20)){
+					    String[] words = new String[command.size()];
+					    for(int i = 0; i < command.size(); i++){
+						words[i] = command.get(i);
+					    }
 					    send("terminal command launched");
-					    send(terminalCommand.go(command));
+					    send(terminalCommand.go(words));
 					}
 					else if(commandCheck("-break",false,0,0)){
 					    send("exiting loop");
@@ -591,7 +595,7 @@ class Discord extends Controller{
 					if(!backupFailed){
 					    cp[1] = "pluginBackup.java";
 					    cp[2] = PluginNameJava;
-					    String cp2 = {"cp",PluginNameJava,"failedPlugin.java"};
+					    String cp2[] = {"cp",PluginNameJava,"failedPlugin.java"};
 					    try{
 						terminalCommand.go(cp2);
 						terminalCommand.go(cp);
