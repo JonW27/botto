@@ -573,7 +573,7 @@ class Discord extends Controller{
 				    String PluginName = "Plugin" + PluginManager.getPluginNum();
 				    String PluginNameJava = PluginName + ".java";
 				    String replacedMarkup = markup.replace("PluginTemplate",PluginName).replace("PluginSomeNumber","Plugin" + PluginManager.getPluginNum() + 1)
-					.replace("/*toBeReplaced","").replace("toBeReplaced*/","");
+					.replace("/*toBeReplaced","//replaced").replace("toBeReplaced*/","//replaced");
 				    //backup
 				    String cp[] = {"cp",PluginNameJava,"pluginBackup.java"};
 				    boolean backupFailed = false;
