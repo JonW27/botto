@@ -8,11 +8,12 @@
 - get greetings
 - run terminal commands
 - understand human input (nlp, to-do)
-- extend capabilities with plugins (to-do)
-- encrypt your mnf.botto file to prevent credential stealing
+- extend capabilities with plugins (somewhat done)
+- encrypt your mnf.botto file to prevent credential stealing (Bcrypt + AES)
 
 ### About
 botto is created by Edmond and Jonathan Wong, respectively. It is licensed under the MIT license. All respecting third party programs included in this repository are distributed under their own licenses.
+Website: hackthe.tech/botto
 
 ## Installation
 ### Pre-reqs
@@ -23,7 +24,7 @@ In addition, if you want to use the discord functionality, please also have Chro
 ### Download
 ```bash
 $ git clone https://github.com/Edmond120/finalProject.git
-$ cd PATH/TO/WHEREEVER/YOU/DOWNLOADED/IT/
+$ cd PATH/TO/WHEREEVER/YOU/DOWNLOADED/IT/botto/
 $ java Botto # You're all set!
 ```
 ### Setup
@@ -42,7 +43,13 @@ We currently make use of some *awesome* third-party libraries. These include [se
 ## Bugs we're aware of
 We've got a long list. If you want to see our development please ask us to join our *asana* board.
 
-**Note to teacher grading**: You've been sent an invite to join our asana team to see our bugs/tasks.
+**Note to teacher grading**:
+* we have some weird messages that pop up
+* if you run discord in phantomjs it crashes due to GhostDriver's lack of key ES6 browser bindings
+* there is plausibility that the user does many dumb things that will result in generic selenium error messages that kind of diagnose it, but don't really due to a large umbrella
+* plugins do not work, although they *are* in the repository, due to difficulty with the discord platform's support of newlines
+* slack has not been implemented yet
+* despite nlp being in the repo, and trained data possibly being in the repo, plugins took away that time, so no nlp
 
 ## Contributing / Pull Requests
 

@@ -1,4 +1,5 @@
-
+import java.awt.Desktop;
+import java.net.URI;
 import java.util.*;
 import java.io.*;
 //import javax.mail.*;
@@ -24,7 +25,7 @@ class info{
   static String chromePath = "testing/chromedriver.exe";
   static String phantomPath = "testing/phantomjs.exe";
   static int determine;
-  static boolean headless = Model.yesNoPrompt("Use phantomjs (headless) to reduce overhead, instead of chrome browser?");
+  static boolean headless = Model.yesNoPrompt("Use phantomjs (headless) to reduce overhead, instead of chrome browser? <-- select no if using discord");
   static void info(){
     if(os.equals("Windows")){
       chromePath = "testing/chromedriver.exe";
@@ -109,7 +110,7 @@ public class Botto{
     System.out.println("defaulting to Controller, did you spell something wrong?");
     return x;
   }
-}
+  }
 private static int tickLength = 1;
 static int getTickLength(){
   return tickLength;
@@ -132,7 +133,7 @@ static void removeController(){
   i--;
 }
 static void welcome(){
-  System.out.println("\n                                Welcome to "+ ANSI_CYAN + "botto"+ANSI_RESET+"!\n\nbotto is an"+ANSI_PURPLE+" easy to set up framework"+ANSI_RESET+" that allows you to "+ANSI_YELLOW+"turn your device into an instant IoT device.\n\nbotto supports channels such as discord, fb messenger, and slack,"+ANSI_RESET+" to let "+ANSI_GREEN+"you make your own programmable recipes.\n\nProgram Usage:"+ANSI_PURPLE+"\njava Controller [option]\n\n"+ANSI_GREEN+"Options include:"+ANSI_PURPLE+"\ndiscord\nmessenger\nslack\n"+ANSI_RESET);
+  System.out.println("\n                                Welcome to "+ ANSI_CYAN + "botto"+ANSI_RESET+"!\n\nbotto is an"+ANSI_PURPLE+" easy to set up framework"+ANSI_RESET+" that allows you to "+ANSI_YELLOW+"turn your device into an instant IoT device.\n\nbotto supports channels such as discord, fb messenger, and slack,"+ANSI_RESET+" to let "+ANSI_GREEN+"you make your own programmable recipes.\n\nProgram Usage:"+ANSI_PURPLE+"\njava Botto [option]\n\n"+ANSI_GREEN+"Options include:"+ANSI_PURPLE+"\ndiscord\nmessenger\nslack (to-do)\n"+ANSI_RESET);
   Model.checkForSettings();
 }
 private static void setValues(){
@@ -165,7 +166,18 @@ public static void main(String[] args){
       reset();
       info.determine = 3;
     }
-  }
+    else if(args[0].equals("about")){
+	try{
+	    if(Desktop.isDesktopSupported()){
+		Desktop.getDesktop().browse(new URI("http://hackthe.tech/botto/"));
+	    }
+	}
+	catch(Throwable e){
+	    System.out.println("go to http://hackthe.tech/botto/");
+	}
+
+	info.determine = 3;
+    }
   else if(args.length == 2){
     info.info();
     setValues();
@@ -215,6 +227,7 @@ public static void main(String[] args){
       }
     }
   }
+}
 }
 }
 class Controller{
