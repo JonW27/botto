@@ -99,7 +99,7 @@ public class Botto{
     return discord;
   }
   else if(determine == 2){
-    Controller messenger = new Messenger(getControllersSize(),driver, "1856862454602853"); // the last arg is the fbid, which can be found from the url of messenger
+    Controller messenger = new Messenger(getControllersSize(),driver); // the last arg is the fbid, which can be found from the url of messenger
     Controllers.add(messenger);
     Drivers.add(driver);
     return messenger;
@@ -453,19 +453,19 @@ class Discord extends Controller{
   String oldMessage;
   String newMessage;
   WebElement message;
+  Model attempt = new Model("discord");
   String markup;
   String oldUsername;
   String newUsername;
-  String discordChannel = "https://discordapp.com/channels/263162147792617482/263162147792617482";
+  String discordChannel = "https://discordapp.com/channels/"+attempt.getStream()+"/"+attempt.getStream();
   public boolean startup(){
-    Model attempt = new Model("discord");
     if(!attempt.getConfig()){
       System.out.println("You don't have an mnf.botto file. Please run java Botto to begin setup.");
       kill();
       return false;
     }
     if(!attempt.channelExists()){
-      System.out.println("You did not set-up credentials for discord in your mnf.botto file.");
+      System.out.println("You may not have set-up credentials for discord in your mnf.botto file. (Disregard if incorrect password entered.)");
       kill();
       return false;
     }
@@ -496,7 +496,7 @@ class Discord extends Controller{
         TimeUnit.SECONDS.sleep(1);
         driver.findElement(By.xpath("//*[contains(text(), 'Skip')]")).click();
       }
-      driver.get("https://discordapp.com/channels/263162147792617482/263162147792617482");
+      driver.get(discordChannel);
       File srcFil = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
       FileUtils.copyFile(srcFil, new File("screen.png"));
       //System.out.println(getMessageGroup(driver));
@@ -567,11 +567,11 @@ class Discord extends Controller{
                     TimeUnit.SECONDS.sleep(1);
                     kill();
                   }
-		  else if(commandCheck("-directMessage",false,0,0)){
-		      send("are we even friends?");
-		      send("if we are, link plz");
-		      setState("directMessage");
-		  }
+                  else if(commandCheck("-directMessage",false,0,0)){
+                    send("are we even friends?");
+                    send("if we are, link plz");
+                    setState("directMessage");
+                  }
                   else if(commandCheck("-extensionPlugin",false,0,0)){
                     send("setting state to extensionPlugin");
                     send("make sure to name your class PluginTemplate and that the method nextPlugin() returns a controller named PluginSomeNumber");
@@ -605,17 +605,17 @@ class Discord extends Controller{
                   }
                 }
               }
-	      else if(getState().equals("directMessage")){
-		  setState("on");
-		  try{
-		      driver.get(markup);
-		      TimeUnit.SECONDS.sleep(4);
-		  }
-		  catch{
-		      driver.get("https://discordapp.com/channels/263162147792617482/263162147792617482");
-		      Time.Unit.SECONDS.sleep(4);
-		  }
-	      }
+              /*else if(getState().equals("directMessage")){
+                setState("on");
+                try{
+                  driver.get(markup);
+                  TimeUnit.SECONDS.sleep(4);
+                }
+                catch{
+                  driver.get(discordChannel);
+                  Time.Unit.SECONDS.sleep(4);
+                }
+              }*/
               else if(getState().equals("AcceptExtensionPlugin")){
                 setState("on");
                 String PluginName = "Plugin" + PluginManager.getPluginNum();

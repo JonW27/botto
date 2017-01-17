@@ -20,10 +20,9 @@ import java.text.SimpleDateFormat;
 import org.apache.commons.io.FileUtils;
 
 class Messenger extends Controller{
-    private String page = ""; // FB page for communication
-    Messenger(int index,WebDriver driver,String page){
+    //private String page = ""; // FB page for communication
+    Messenger(int index,WebDriver driver){
     	super(index,"messenger",driver);
-	this.page = page;
     }
     void kill(){
     	setState("dead");
@@ -113,10 +112,11 @@ class Messenger extends Controller{
     //String discriminator;
     String oldMessage;
     String newMessage;
+    Model attempt = new Model("messenger");
+    String page = attempt.getStream();
     WebElement message;
     //String markup;
     public boolean startup(){
-      Model attempt = new Model("messenger");
       if(!attempt.getConfig()){
         System.out.println("You don't have an mnf.botto file. Please run java Botto to begin setup.");
         kill();

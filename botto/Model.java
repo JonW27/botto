@@ -7,6 +7,7 @@ class Model{
   String channel;
   String username;
   String password;
+  String stream;
   String fullPassword;
   File mnf = new File("mnf.botto");
   Boolean channelExists = false;
@@ -22,6 +23,9 @@ class Model{
   }
   String getPassword(){
     return password;
+  }
+  String getStream(){
+    return stream;
   }
   Boolean getConfig(){
     return mnf.exists() && !mnf.isDirectory();
@@ -54,6 +58,7 @@ class Model{
           Encryption encryption = Encryption.getDefault(key, salt, iv);
           username = encryption.decryptOrNull(creds[1]);
           password = encryption.decryptOrNull(creds[2]);
+          stream = encryption.decryptOrNull(creds[3]);
         }
     }
   }
@@ -106,6 +111,11 @@ class Model{
     result += ":";
     Scanner reader3 = new Scanner(System.in);
     out.println("Password of account:");
+    result += encryption.encryptOrNull(reader.nextLine());
+    result = result.substring(0,result.length()-1);
+    result += ":";
+    Scanner reader4 = new Scanner(System.in);
+    out.println("Channel URL (for messenger paste fbId, and for discord paste discordId):");
     result += encryption.encryptOrNull(reader.nextLine());
     result = result.substring(0,result.length()-1);
     writer.println(result);
