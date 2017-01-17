@@ -6,8 +6,8 @@ class PluginTemplate extends Discord{//can also extend discord and messenger
     PluginTemplate(int Index,WebDriver driver){
 	super(Index,"TestPlugin",driver);
     }
-    PluginTemplate(int Index, int parentIndex_, WebDriver driver){
-	super(Index,parentIndex_,"TestPlugin",driver);
+    PluginTemplate(int Index, int parentIndex, WebDriver driver){
+	super(Index,parentIndex,"TestPlugin",driver);
     }
     boolean startup(){
 	//insert startup code here
@@ -50,7 +50,6 @@ class PluginTemplate extends Discord{//can also extend discord and messenger
 	    makeErrorReport(e);
 	}
     }
-    /*toBeReplaced
       Controller nextPlugin(int index,WebDriver driver){
       Controller plugin = new PluginSomeNumber(index,driver);
       return plugin;
@@ -61,5 +60,4 @@ class PluginTemplate extends Discord{//can also extend discord and messenger
       Controller plugin = new PluginSomeNumber(index,parentIndex,driver);
       return plugin;
       }
-      toBeReplaced*/
 }

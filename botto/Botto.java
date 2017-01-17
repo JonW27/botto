@@ -161,6 +161,10 @@ public class Botto{
 	    else if(args[0].equals("messenger")){
 		info.determine = 2;
 	    }
+	    else if(args[0].equals("reset")){
+		reset();
+		info.determine = 3;
+	    }
 	}
 	else if(args.length == 2){
 	    info.info();
@@ -170,9 +174,11 @@ public class Botto{
 	    }
 	}
 	if(args.length > 0){
-	    reset();
-	    makeController(args[0], info.determine).startup();
-	    System.out.println("Started up " + args[0]);
+	    if(info.determine != 3){
+		reset();
+		makeController(args[0], info.determine).startup();
+		System.out.println("Started up " + args[0]);
+	    }
 	    while(Controllers.size() > 0){
 		ii = 0;
 		for(i = 0;i < Controllers.size();i++){

@@ -1,7 +1,7 @@
 import org.openqa.selenium.WebDriver;
 class Plugin0 extends Discord{//can also extend discord and messenger
     //maybe able to extend other plugins
-    //When making methods, you might want to add a  at the start of the name to avoid overridding certain methods.
+    //When making methods, you might want to add a _ at the start of the name to avoid overridding certain methods.
     Plugin0(int Index,WebDriver driver){
     super(Index,"TestPlugin",driver);
     }

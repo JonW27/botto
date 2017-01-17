@@ -1,8 +1,8 @@
 
 import org.openqa.selenium.WebDriver;
-class PluginTemplate extends Controller{//can also extend Discord and Messenger
+class PluginTemplate extends Controller{/*can also extend Discord and Messenger
     //maybe able to extend other plugins
-    //When making methods, you might want to add a _ at the start of the name to avoid overridding certain methods.
+    //When making methods, you might want to add a _ at the start of the name to avoid overridding certain methods.*/
     PluginTemplate(int Index,WebDriver driver){
 	super(Index,"PluginNameGoesHere",driver);
     }
@@ -10,16 +10,16 @@ class PluginTemplate extends Controller{//can also extend Discord and Messenger
 	super(Index,parentIndex,"PluginNameGoesHere",driver);
     }
     boolean startup(){
-	//insert startup code here
+	/*insert startup code here
 	//startup code dosen't run in extensionTypePlugins
 	//a startup code is still needed however since extensionTypePlugins eventually be come permanentTypePlugins
 
-	//return super.startup();
+	//return super.startup();*/
 	return true;
     }
     boolean tick(){
-	//insert tick code here
-	//return super.tick();
+	/*insert tick code here
+	//return super.tick();*/
 	return true;
     }
     void runPluginDash(){
@@ -38,7 +38,7 @@ class PluginTemplate extends Controller{//can also extend Discord and Messenger
     }
     void runPlugin(){
 	try{
-	    //same as runPluginDash() except this is for commands that start without a "-"
+	    /*same as runPluginDash() except this is for commands that start without a "-"*/
 	}
 	catch(Exception e){
 	    makeErrorReport(e);
