@@ -51,21 +51,21 @@ We've got a long list. If you want to see our development please ask us to join 
 * slack has not been implemented yet
 * despite nlp being in the repo, and trained data possibly being in the repo, plugins took away that time, so no nlp
 
-## Discord Commands (* are bullet points, not part of the command)
-*hi
+## Discord Commands
+* hi
 shows that Botto can get your username
-*say (insert word here, add a \ before each space)
+* say (insert word here, add a \ before each space)
 Botto sends said word
-*-time
+* -time
 shows that Botto can get the timestamp
-*-profilePicCheck
+* -profilePicCheck
 shows that Botto can get your profile pic, this is not actually used for identification
-*-getDiscriminator
+* -getDiscriminator
 gets the discriminator(a number to identify people with the same username)
-*-term (insert terminal command here)
+* -term (insert terminal command here)
 same thing a terminal works, cd, and terminal commands that require user input are not supported at the moment due to some bugs.
 also, terminal commands that print over 2000 characters also don't work because discord has a message size limit
-*-break
+* -break
 exits the main loop, ends the program
 
 ## Contributing / Pull Requests
