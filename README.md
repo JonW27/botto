@@ -17,10 +17,12 @@ Website: hackthe.tech/botto
 
 ## Installation
 ### Pre-reqs
-Our program has been tested with Java 8, and has not had any further testing on lower Java versions. It is safe to assume that it will probably be extremely buggy with older java versions, and throw many errors, so do so at your own risk.  
+Our program has been tested with Java 8, and has not had any further testing on lower Java versions. It is safe to assume that it will probably be extremely buggy with older java versions, and throw many errors, so do so at your own risk.
 **TLDR**: Don't use a Java version lower than 8 unless you're desperate.  
 
 In addition, if you want to use the discord functionality, please also have Chrome installed. Our program currently ships with only ChromeDriver and GhostDriver, and GhostDriver (PhantomJS) lacks some key ES6 bindings for it to work with Discord.
+
+We don't have platform detection for Linux so it is recommended to not use Linux as your OS for running this program as of now.
 ### Download
 ```bash
 $ git clone https://github.com/Edmond120/finalProject.git
