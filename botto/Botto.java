@@ -32,9 +32,9 @@ class info{
       chromePath = "testing/chromedriver.exe";
       phantomPath = "testing/phantomjs.exe";
     }
-    else if(SystemUtils.IS_OS_LINUX){
+    else if(SystemUtils.IS_OS_LINUX || os.equals("Linux")){
       chromePath = "testing/chromedriver";
-      phantomPath = "testing/phantomjs-linux";
+      phantomPath = "testing/linux/phantomjs";
     }
     else if(SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX){
       chromePath = "testing/chromedriver";
@@ -144,6 +144,7 @@ static void welcome(){
 private static void setValues(){
   System.setProperty("webdriver.chrome.driver", info.chromePath);
   System.setProperty("phantomjs.binary.path", info.phantomPath);
+  System.out.println(info.phantomPath);
 }
 private static int i = 0;
 private static int ii = 0;
