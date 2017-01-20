@@ -32,9 +32,13 @@ class info{
       chromePath = "testing/chromedriver.exe";
       phantomPath = "testing/phantomjs.exe";
     }
-    else if(SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX || SystemUtils.IS_OS_LINUX){
+    else if(SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX){
       chromePath = "testing/chromedriver";
       phantomPath = "testing/phantomjs";
+    }
+    else if(SystemUtils.IS_OS_LINUX){
+      chromePath = "testing/chromedriver";
+      phantomPath = "testing/phantomjs-linux";
     }
     System.out.println("Using "+chromePath+" or "+phantomPath);
   }
