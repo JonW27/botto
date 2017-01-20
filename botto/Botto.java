@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 import java.net.InetAddress;
 //import com.sun.mail.smtp.*;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
@@ -22,16 +23,16 @@ import java.text.SimpleDateFormat;
 
 class info{
   static String os = System.getProperty("os.name");
-  static String chromePath = "testing/chromedriver.exe";
-  static String phantomPath = "testing/phantomjs.exe";
+  static String chromePath = "testing/chromedriver";
+  static String phantomPath = "testing/phantomjs";
   static int determine;
   static boolean headless = Model.yesNoPrompt("Use phantomjs (headless) to reduce overhead, instead of chrome browser? <-- select no if using discord");
   static void info(){
-    if(os.equals("Windows")){
+    if(SystemUtils.IS_OS_WINDOWS){
       chromePath = "testing/chromedriver.exe";
       phantomPath = "testing/phantomjs.exe";
     }
-    else if(os.equals("Mac OS X")){
+    else if(SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX || SystemUtils.IS_OS_LINUX){
       chromePath = "testing/chromedriver";
       phantomPath = "testing/phantomjs";
     }
