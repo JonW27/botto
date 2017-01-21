@@ -134,7 +134,8 @@ class Messenger extends Controller{
       driver.findElement(By.className("_27z3")).sendKeys(attempt.getPassword());
       driver.findElement(By.className("_27z3")).submit();
 	    System.out.println("Scaffolding worked! "+ driver.getTitle());
-      driver.get("https://mbasic.facebook.com/messages/read/?fbid="+page+"&_rdr");
+      driver.get("https://mbasic.facebook.com/"+page);
+	  driver.findElement(By.linkText("Message")).click();
       // got to fix below
 	    //System.out.println(getMessageGroup(driver));
 
