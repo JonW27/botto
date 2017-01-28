@@ -570,6 +570,11 @@ class Discord extends Controller{
                     send("message from");
                     send(profilePicCheck(message));
                   }
+		  else if(commandCheck("-upload",false,1,1)){
+		      driver.findElement(By.className("file-input")).sendKeys(command.get(1));
+		      TimeUnit.SECONDS.sleep(1);
+		      driver.findElement(By.xpath("//*[@id=\"app-mount\"]/div/div[6]/div[2]/div/div/div[2]/button[2]")).click();
+		  }
                   else if(commandCheck("-getDiscriminator",false,0,0)){
                     send(getDiscriminator(driver,message));
                   }
