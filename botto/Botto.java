@@ -29,15 +29,18 @@ class info{
   static boolean headless = Model.yesNoPrompt("Use phantomjs (headless) to reduce overhead, instead of chrome browser? <-- select no if using discord");
   static void info(){
     if(SystemUtils.IS_OS_WINDOWS){
+	System.out.println("windows");
       chromePath = "testing/chromedriver.exe";
       phantomPath = "testing/phantomjs.exe";
     }
     else if(SystemUtils.IS_OS_LINUX || os.equals("Linux")){
+	System.out.println("linux");
       chromePath = "testing/chromedriver";
       phantomPath = "testing/linux/phantomjs";
     }
     else if(SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_MAC_OSX){
-      chromePath = "testing/chromedriver";
+	System.out.println("mac");
+	chromePath = "testing/chromedriver";
       phantomPath = "testing/phantomjs";
     }
     System.out.println("Using "+chromePath+" or "+phantomPath);
