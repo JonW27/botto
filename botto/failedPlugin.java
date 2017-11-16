@@ -54,6 +54,7 @@ class Plugin0 extends Discord{//can also extend discord and messenger
       return plugin;
       }
       //only used for extension type plugins
+
       Controller nextPlugin(int index,int parentIndex,WebDriver driver){
       Controller plugin = new Plugin1(index,parentIndex,driver);
       return plugin;

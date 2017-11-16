@@ -154,21 +154,23 @@ class Model{
 	return true;
     }
     static String readFromFile(String fileName){
-	File x = new File(fileName);
 	try{
-	    Scanner y = new Scanner(x);
-
+	    BufferedReader x = new BufferedReader(new FileReader(fileName));
 	    String line = "";
-	    while(y.hasNext()){
-		line += y.next();
+	    while(x.ready()){
+		line += x.readLine() + '\n';
 	    }
+	    System.out.println(line);
 	    return line;
 	}
 	catch(FileNotFoundException f){
 	    f.printStackTrace();
+	    return "fileNotFound";
+	}
+	catch(Throwable e){
+	    e.printStackTrace();
 	    return "failed";
 	}
-
     }
     public static void checkForSettings(){
 	File metadata = new File("mnf.botto");

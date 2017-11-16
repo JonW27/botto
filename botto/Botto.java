@@ -83,38 +83,11 @@ public class Botto{
   }
   private static Controller makeController(String tag, int determine){
     WebDriver driver;
-    if(info.headless){
-      driver = new PhantomJSDriver();
-    }
-    else{
-      driver = new ChromeDriver();
-    }
-    driver.manage().window().setSize(new Dimension(1124,850));
-    /* working on it
-    if(determine == 0){
-    Controller p = lastPlugin.nextPlugin(i,driver,"plugin");
-    Controllers.add(p);
-    pluginNum++;
-    return p;
-  }
-  */
-  if(determine == 1){
-    Controller discord = new Discord(getControllersSize(),driver);
-    Controllers.add(discord);
-    Drivers.add(driver);
-    return discord;
-  }
-  else if(determine == 2){
+    driver = new ChromeDriver();
     Controller messenger = new Messenger(getControllersSize(),driver); // the last arg is the fbid, which can be found from the url of messenger
     Controllers.add(messenger);
     Drivers.add(driver);
     return messenger;
-  }
-  else{
-    Controller x = new Controller("default",false);
-    System.out.println("defaulting to Controller, did you spell something wrong?");
-    return x;
-  }
   }
 private static int tickLength = 1;
 static int getTickLength(){
@@ -127,7 +100,7 @@ static int getControllerIndex(String tag){
   for(int i = 0;i < Controllers.size();i++){
     if(getController(i).getTag().equals(tag)){
       return i;
-    }
+   }
   }
   return -1;
 }
@@ -155,48 +128,9 @@ static int getIi(){
   return ii;
 }
 public static void main(String[] args){
-  if(args.length == 0){
-    welcome();
-    Model.checkForSettings();
-  }
-  else if(args.length == 1){
-    info.info();
-    setValues();
-    if(args[0].equals("discord")){
-      info.determine = 1;
-    }
-    else if(args[0].equals("messenger")){
-      info.determine = 2;
-    }
-    else if(args[0].equals("reset")){
-      reset();
-      info.determine = 3;
-    }
-    else if(args[0].equals("about")){
-	try{
-	    if(Desktop.isDesktopSupported()){
-		Desktop.getDesktop().browse(new URI("http://hackthe.tech/botto/"));
-	    }
-	}
-	catch(Throwable e){
-	    System.out.println("go to http://hackthe.tech/botto/");
-	}
-
-	info.determine = 3;
-    }
-  else if(args.length == 2){
-    info.info();
-    setValues();
-    if(args[0].equals("plugin")){
-      info.determine = 0;
-    }
-  }
-  if(args.length > 0){
-    if(info.determine != 3){
-      reset();
-      makeController(args[0], info.determine).startup();
-      System.out.println("Started up " + args[0]);
-    }
+    reset();
+    makeController("messenger", info.determine).startup();
+    System.out.println("Started up " + "messenger");
     while(Controllers.size() > 0){
       ii = 0;
       for(i = 0;i < Controllers.size();i++){
@@ -232,8 +166,6 @@ public static void main(String[] args){
         }
       }
     }
-  }
-}
 }
 }
 class Controller{
@@ -299,11 +231,11 @@ class Controller{
     state = x;
   }
   int sleepTime = 1;
-  int maxSleepTime = 5;
+  int maxSleepTime = 3;
   int minSleepTime = 1;
   int pause = 0;
-  int maxCounter = 300;
-  int counter = 300;
+  int maxCounter = 200;
+  int counter = 200;
   void makeErrorReport(Exception e){
     StringWriter errors = new StringWriter();
     e.printStackTrace(new PrintWriter(errors));
